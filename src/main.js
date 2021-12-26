@@ -16,8 +16,8 @@ const RenderPosition = {
 };
 
 const FILM_CARDS_AMOUNT = 25;
-const detailFilmCards = Array.from({length: 1}, generateFilmCard);
-const filmCards = Array.from({length: FILM_CARDS_AMOUNT}, generateDetailFilmCard);
+const detailFilmCards = Array.from({length: 1}, generateDetailFilmCard);
+const filmCards = Array.from({length: FILM_CARDS_AMOUNT}, generateFilmCard);
 
 const renderTemplate = (container, template, place) => {
   container.insertAdjacentHTML(place, template);

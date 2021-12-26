@@ -1,5 +1,22 @@
-export const createDetailInfoPopupTemplate = () => (
-  `<section class="film-details visually-hidden">
+export const createDetailInfoPopupTemplate = (detailCard) => {
+  const {
+    poster,
+    title,
+    originalTitle,
+    rating,
+    director,
+    writers,
+    actors,
+    releaseDate,
+    runtime,
+    country,
+    genres,
+    description,
+    ageRating,
+    comments,
+    quantityComments
+  } = detailCard;
+  return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">
@@ -7,9 +24,9 @@ export const createDetailInfoPopupTemplate = () => (
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+          <img class="film-details__poster-img" src="${poster}" alt="">
 
-          <p class="film-details__age">18+</p>
+          <p class="film-details__age">${ageRating}</p>
         </div>
 
         <div class="film-details__info">
@@ -162,5 +179,5 @@ export const createDetailInfoPopupTemplate = () => (
       </section>
     </div>
   </form>
-</section>`
-);
+</section>`;
+};

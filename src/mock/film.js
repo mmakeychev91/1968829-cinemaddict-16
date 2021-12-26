@@ -66,11 +66,11 @@ const lorem = [
 ];
 //генерируем пояснения к фильму
 const generateDiscription = () => {
-  const n = getRandomInteger(1,5);
+  const n = getRandomInteger(1, 5);
 
-  const shuffled = lorem.sort(()=> .5 - Math.random());
+  const shuffled = lorem.sort(() => .5 - Math.random());
 
-  const selected = shuffled.slice(0,n);
+  const selected = shuffled.slice(0, n);
   return selected;
 };
 
@@ -133,23 +133,23 @@ const generateComments   = (returnValue) => {
     return comments.length;
   }
 };
-const comments = generateComments('arrow');
+const commentsValue = generateComments('arrow');
 
 const generateReleaseDate = (format) => {
   const now = dayjs();
   const randomIndexForDay = getRandomInteger(0, -36500);
   if (format === 'full') {
-    return now.add(randomIndexForDay,'day').format('DD MMMM YYYY ');
+    return now.add(randomIndexForDay, 'day').format('DD MMMM YYYY ');
   } else {
-    return now.add(randomIndexForDay,'day').format('YYYY ');
+    return now.add(randomIndexForDay, 'day').format('YYYY ');
   }
 };
 const generateRuntime = () => {
-  const h= getRandomInteger(1,3);
-  const m= getRandomInteger(1,59);
-  const hoursValue = `${h  }h`;
-  const minutesValue = `${m  }m`;
-  return `${hoursValue  } ${  minutesValue}`;
+  const h = getRandomInteger(1, 3);
+  const m = getRandomInteger(1, 59);
+  const hoursValue = `${h}h`;
+  const minutesValue = `${m}m`;
+  return `${hoursValue} ${minutesValue}`;
 };
 const generateDirectorName = () => {
   const directors = [
@@ -176,11 +176,11 @@ const generateWriters = () => {
     'William Goldman',
   ];
 
-  const n = getRandomInteger(1,3);
+  const n = getRandomInteger(1, 3);
 
-  const shuffled = writers.sort(()=> .5 - Math.random());
+  const shuffled = writers.sort(() => .5 - Math.random());
 
-  const selected = shuffled.slice(0,n);
+  const selected = shuffled.slice(0, n);
   return selected;
 };
 const generateActors = () => {
@@ -202,11 +202,11 @@ const generateActors = () => {
 
   ];
 
-  const n = getRandomInteger(3,3);
+  const n = getRandomInteger(3, 3);
 
-  const shuffled = actors.sort(()=> .5 - Math.random());
+  const shuffled = actors.sort(() => .5 - Math.random());
 
-  const selected = shuffled.slice(0,n);
+  const selected = shuffled.slice(0, n);
   return selected;
 };
 const generateCountry = () => {
@@ -223,7 +223,7 @@ const generateCountry = () => {
 
   return countries[randomIndex];
 };
-const generateGenres = () => {
+const generateGenres = (genreQuantity) => {
   const genres = [
     'Action',
     'Comedy',
@@ -234,12 +234,15 @@ const generateGenres = () => {
     'Romance',
     'Thriller',
   ];
+  let n;
+  if  (genreQuantity === 'one') {
+    n = getRandomInteger(1, 1);
+  } else {
+    n = getRandomInteger(1, 3);
+  }
+  const shuffled = genres.sort(() => .5 - Math.random());
 
-  const n = getRandomInteger(1,3);
-
-  const shuffled = genres.sort(()=> .5 - Math.random());
-
-  const selected = shuffled.slice(0,n);
+  const selected = shuffled.slice(0, n);
   return selected;
 };
 const generateAgeRating = () => {
@@ -260,7 +263,7 @@ export const generateDetailFilmCard = () => ({
   poster: generatePoster(),
   title: generateTitle(),
   originalTitle: generateTitle(),
-  rating:getRandomFloat(0,10),
+  rating: getRandomFloat(0, 10),
   director: generateDirectorName(),
   writers: generateWriters(),
   actors: generateActors(),
@@ -270,18 +273,18 @@ export const generateDetailFilmCard = () => ({
   genres: generateGenres(),
   description: generateDiscription(),
   ageRating: generateAgeRating(),
-  comments: comments,
+  comments: commentsValue,
   //передавать сюда реальное количество комментариев из массива ключа выше
-  quantityComments: comments.length,
+  quantityComments: commentsValue.length,
 });
 //генерируем карточку фильма
 export const generateFilmCard = () => ({
   poster: generatePoster(),
   title: generateTitle(),
-  rating:getRandomFloat(0,10),
+  rating: getRandomFloat(0, 10),
   releaseDate: generateReleaseDate(),
   runtime: generateRuntime(),
-  genres: generateGenres(),
+  genres: generateGenres('one'),
   description: generateDiscription(),
   quantityComments: generateComments(),
 });
