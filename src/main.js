@@ -16,8 +16,7 @@ const RenderPosition = {
 };
 
 const FILM_CARDS_AMOUNT = 25;
-console.log(generateDetailFilmCard());
-const detailFilmCards = Array.from({length: 1}, generateDetailFilmCard);
+const detailFilmCards = Array.from({length: 1}, generateFilmCard);
 const filmCards = Array.from({length: FILM_CARDS_AMOUNT}, generateDetailFilmCard);
 
 const renderTemplate = (container, template, place) => {
@@ -37,10 +36,10 @@ const body = document.querySelector('body');
 const footer = document.querySelector('footer');
 
 for (let i =0; i < FILM_CARDS_AMOUNT; i++) {
-  renderTemplate(mainFilmListContainer, createFilmCardTemplate(),RenderPosition.AFTERBEGIN);
+  renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCards[i]),RenderPosition.AFTERBEGIN);
 }
 renderTemplate(mainFilmList, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(header, createRankTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(body, createDetailInfoPopupTemplate(), RenderPosition.BEFOREEND);
+renderTemplate(body, createDetailInfoPopupTemplate(detailFilmCards), RenderPosition.BEFOREEND);
 renderTemplate(footer, createFilmQuantityTemplate(), RenderPosition.BEFOREEND);
 

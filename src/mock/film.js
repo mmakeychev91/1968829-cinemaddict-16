@@ -75,7 +75,7 @@ const generateDiscription = () => {
 };
 
 //создаем функцию, которая генерирует объекты с комментариями
-const generateComments   = () => {
+const generateComments   = (returnValue) => {
   //генерим путь к смайлу
   const generateEmoji = () => {
     const emoji = [
@@ -127,14 +127,22 @@ const generateComments   = () => {
       message:generateMessage(),
     };
   }
-
-  return comments;
+  if (returnValue === 'arrow') {
+    return comments;
+  } else {
+    return comments.length;
+  }
 };
+const comments = generateComments('arrow');
 
-const generateReleaseDate = () => {
+const generateReleaseDate = (format) => {
   const now = dayjs();
   const randomIndexForDay = getRandomInteger(0, -36500);
-  return now.add(randomIndexForDay,'day').format('DD MMMM YYYY ');
+  if (format === 'full') {
+    return now.add(randomIndexForDay,'day').format('DD MMMM YYYY ');
+  } else {
+    return now.add(randomIndexForDay,'day').format('YYYY ');
+  }
 };
 const generateRuntime = () => {
   const h= getRandomInteger(1,3);
@@ -256,14 +264,15 @@ export const generateDetailFilmCard = () => ({
   director: generateDirectorName(),
   writers: generateWriters(),
   actors: generateActors(),
-  releaseDate: generateReleaseDate(),
+  releaseDate: generateReleaseDate('full'),
   runtime: generateRuntime(),
   country: generateCountry(),
   genres: generateGenres(),
   description: generateDiscription(),
   ageRating: generateAgeRating(),
-  comments: generateComments(),
-
+  comments: comments,
+  //передавать сюда реальное количество комментариев из массива ключа выше
+  quantityComments: comments.length,
 });
 //генерируем карточку фильма
 export const generateFilmCard = () => ({
@@ -274,5 +283,5 @@ export const generateFilmCard = () => ({
   runtime: generateRuntime(),
   genres: generateGenres(),
   description: generateDiscription(),
-  comments: generateComments(),
+  quantityComments: generateComments(),
 });
