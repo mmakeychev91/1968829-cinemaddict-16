@@ -5,7 +5,6 @@ import {createRankTemplate} from './view/rank.js';
 import {createDetailInfoPopupTemplate} from './view/detail-info-popup.js';
 import {createFilmQuantityTemplate} from './view/film-quantity.js';
 import {createFilmWrapper} from './view/films-list.js';
-import {generateDetailFilmCard} from './mock/film';
 import {generateFilmCard} from './mock/film';
 
 const RenderPosition = {
@@ -16,7 +15,6 @@ const RenderPosition = {
 };
 
 const FILM_CARDS_AMOUNT = 25;
-const detailFilmCards = Array.from({length: 1}, generateDetailFilmCard);
 const filmCards = Array.from({length: FILM_CARDS_AMOUNT}, generateFilmCard);
 
 const renderTemplate = (container, template, place) => {
@@ -40,6 +38,6 @@ for (let i =0; i < FILM_CARDS_AMOUNT; i++) {
 }
 renderTemplate(mainFilmList, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(header, createRankTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(body, createDetailInfoPopupTemplate(detailFilmCards), RenderPosition.BEFOREEND);
+renderTemplate(body, createDetailInfoPopupTemplate(filmCards[0]), RenderPosition.BEFOREEND);
 renderTemplate(footer, createFilmQuantityTemplate(), RenderPosition.BEFOREEND);
 

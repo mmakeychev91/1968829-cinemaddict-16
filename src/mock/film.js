@@ -64,6 +64,131 @@ const lorem = [
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.',
 ];
+
+const generateReleaseDate = (format) => {
+  const now = dayjs();
+  const randomIndexForDay = getRandomInteger(0, -36500);
+  if (format === 'full') {
+    return now.add(randomIndexForDay, 'day').format('DD MMMM YYYY ');
+  } else {
+    return now.add(randomIndexForDay, 'day').format('YYYY ');
+  }
+};
+const generateRuntime = () => {
+  const h = getRandomInteger(1, 3);
+  const m = getRandomInteger(1, 59);
+  const hoursValue = `${h}h`;
+  const minutesValue = `${m}m`;
+  return `${hoursValue} ${minutesValue}`;
+};
+const generateDirectorName = () => {
+  const directors = [
+    'Woody Allen',
+    'Robert Altman',
+    'Ingmar Bergman',
+    'Mel Brooks',
+    'Tim Burton',
+  ];
+
+  const randomIndex = getRandomInteger(0, directors.length - 1);
+
+  return directors[randomIndex];
+};
+
+const generateWriters = () => {
+  const writers = [
+    'Billy Wilder',
+    'Ethan Coen',
+    'Joel Coen',
+    'Robert Towne',
+    'Quentin Tarantino',
+    'Francis Ford Coppola',
+    'William Goldman',
+  ];
+
+  const n = getRandomInteger(1, 3);
+
+  const shuffled = writers.sort(() => .5 - Math.random());
+
+  const selected = shuffled.slice(0, n);
+  return selected.join(', ');
+};
+const generateActors = () => {
+  const actors = [
+    'Jack Nicholson',
+    'Marlon Brando',
+    'Robert De Niro',
+    'Al Pacino',
+    'Daniel Day-Lewis',
+    'Dustin Hoffman',
+    'Tom Hanks',
+    'Anthony Hopkins',
+    'Penelope Cruz',
+    'Sally Hawkins',
+    'Helena Bonham Carter',
+    'Octavia Spencer',
+    'Rachel Weisz',
+    'Naomi Watts',
+
+  ];
+
+  const n = getRandomInteger(3, 3);
+
+  const shuffled = actors.sort(() => .5 - Math.random());
+
+  const selected = shuffled.slice(0, n);
+  return selected.join(', ');
+};
+const generateCountry = () => {
+  const countries = [
+    'Kenya',
+    'USA',
+    'Russia',
+    'Poland',
+    'Turkey',
+    'Argentina',
+  ];
+
+  const randomIndex = getRandomInteger(0, countries.length - 1);
+
+  return countries[randomIndex];
+};
+const generateGenres = (genreQuantity) => {
+  const genres = [
+    'Action',
+    'Comedy',
+    'Drama',
+    'Fantasy',
+    'Horror',
+    'Mystery',
+    'Romance',
+    'Thriller',
+  ];
+  let n;
+  if (genreQuantity === 'one') {
+    n = 1;
+  } else {
+    n = 3;
+  }
+  const shuffled = genres.sort(() => .5 - Math.random());
+
+  const selected = shuffled.slice(0, n);
+  return selected;
+};
+
+const generateAgeRating = () => {
+  const ageRating = [
+    '0+',
+    '6+',
+    '12+',
+    '16+',
+    '18+',
+  ];
+
+  const randomIndex = getRandomInteger(0, ageRating.length - 1);
+
+  return ageRating[randomIndex];
+};
 //генерируем пояснения к фильму
 const generateDiscription = () => {
   const n = getRandomInteger(1, 5);
@@ -73,7 +198,23 @@ const generateDiscription = () => {
   const selected = shuffled.slice(0, n);
   return selected;
 };
+const generateGenresInSpan = () => {
+  const spanGenres = [
+    '<span class="film-details__genre">Action</span>',
+    '<span class="film-details__genre">Comedy</span>',
+    '<span class="film-details__genre">Drama</span>',
+    '<span class="film-details__genre">Fantasy</span>',
+    '<span class="film-details__genre">Horror</span>',
+    '<span class="film-details__genre">Mystery</span>',
+    '<span class="film-details__genre">Romance</span>',
+    '<span class="film-details__genre">Thriller</span>',
+  ];
 
+  const shuffled = spanGenres.sort(() => .5 - Math.random());
+
+  const selected = shuffled.slice(0, 3);
+  return selected.join('');
+};
 //создаем функцию, которая генерирует объекты с комментариями
 const generateComments   = (returnValue) => {
   //генерим путь к смайлу
@@ -124,7 +265,7 @@ const generateComments   = (returnValue) => {
       emoji: generateEmoji(),
       date: generateDate(),
       author: generateAuthor(),
-      message:generateMessage(),
+      message: generateMessage(),
     };
   }
   if (returnValue === 'arrow') {
@@ -133,133 +274,29 @@ const generateComments   = (returnValue) => {
     return comments.length;
   }
 };
-const commentsValue = generateComments('arrow');
-
-const generateReleaseDate = (format) => {
-  const now = dayjs();
-  const randomIndexForDay = getRandomInteger(0, -36500);
-  if (format === 'full') {
-    return now.add(randomIndexForDay, 'day').format('DD MMMM YYYY ');
-  } else {
-    return now.add(randomIndexForDay, 'day').format('YYYY ');
-  }
-};
-const generateRuntime = () => {
-  const h = getRandomInteger(1, 3);
-  const m = getRandomInteger(1, 59);
-  const hoursValue = `${h}h`;
-  const minutesValue = `${m}m`;
-  return `${hoursValue} ${minutesValue}`;
-};
-const generateDirectorName = () => {
-  const directors = [
-    'Woody Allen',
-    'Robert Altman',
-    'Ingmar Bergman',
-    'Mel Brooks',
-    'Tim Burton',
+const generateCommentsInTags = () => {
+  const liComments= [
+    '<li class="film-details__comment">Comments 1</li>',
+    '<li class="film-details__comment">Comments 2</li>',
+    '<li class="film-details__comment">Comments 3</li>',
+    '<li class="film-details__comment">Comments 4</li>',
+    '<li class="film-details__comment">Comments 5</li>',
+    '<li class="film-details__comment">Comments 6</li>',
+    '<li class="film-details__comment">Comments 7</li>',
+    '<li class="film-details__comment">Comments 8</li>',
   ];
+  const n = getRandomInteger(1, 5);
 
-  const randomIndex = getRandomInteger(0, directors.length - 1);
-
-  return directors[randomIndex];
-};
-
-const generateWriters = () => {
-  const writers = [
-    'Billy Wilder',
-    'Ethan Coen',
-    'Joel Coen',
-    'Robert Towne',
-    'Quentin Tarantino',
-    'Francis Ford Coppola',
-    'William Goldman',
-  ];
-
-  const n = getRandomInteger(1, 3);
-
-  const shuffled = writers.sort(() => .5 - Math.random());
+  const shuffled = liComments.sort(() => .5 - Math.random());
 
   const selected = shuffled.slice(0, n);
-  return selected;
+  return selected.join('');
+
 };
-const generateActors = () => {
-  const actors = [
-    'Jack Nicholson',
-    'Marlon Brando',
-    'Robert De Niro',
-    'Al Pacino',
-    'Daniel Day-Lewis',
-    'Dustin Hoffman',
-    'Tom Hanks',
-    'Anthony Hopkins',
-    'Penelope Cruz',
-    'Sally Hawkins',
-    'Helena Bonham Carter',
-    'Octavia Spencer',
-    'Rachel Weisz',
-    'Naomi Watts',
+const commentsValue = generateCommentsInTags();
 
-  ];
-
-  const n = getRandomInteger(3, 3);
-
-  const shuffled = actors.sort(() => .5 - Math.random());
-
-  const selected = shuffled.slice(0, n);
-  return selected;
-};
-const generateCountry = () => {
-  const countries = [
-    'Kenya',
-    'USA',
-    'Russia',
-    'Poland',
-    'Turkey',
-    'Argentina',
-  ];
-
-  const randomIndex = getRandomInteger(0, countries.length - 1);
-
-  return countries[randomIndex];
-};
-const generateGenres = (genreQuantity) => {
-  const genres = [
-    'Action',
-    'Comedy',
-    'Drama',
-    'Fantasy',
-    'Horror',
-    'Mystery',
-    'Romance',
-    'Thriller',
-  ];
-  let n;
-  if  (genreQuantity === 'one') {
-    n = getRandomInteger(1, 1);
-  } else {
-    n = getRandomInteger(1, 3);
-  }
-  const shuffled = genres.sort(() => .5 - Math.random());
-
-  const selected = shuffled.slice(0, n);
-  return selected;
-};
-const generateAgeRating = () => {
-  const ageRating = [
-    '0+',
-    '6+',
-    '12+',
-    '16+',
-    '18+',
-  ];
-
-  const randomIndex = getRandomInteger(0, ageRating.length - 1);
-
-  return ageRating[randomIndex];
-};
-//генерируем детальную карточку фильма (popup)
-export const generateDetailFilmCard = () => ({
+//генерируем карточку фильма
+export const generateFilmCard = () => ({
   poster: generatePoster(),
   title: generateTitle(),
   originalTitle: generateTitle(),
@@ -267,24 +304,16 @@ export const generateDetailFilmCard = () => ({
   director: generateDirectorName(),
   writers: generateWriters(),
   actors: generateActors(),
-  releaseDate: generateReleaseDate('full'),
+  releaseDate: generateReleaseDate(),
+  fullReleaseDate: generateReleaseDate('full'),
   runtime: generateRuntime(),
-  country: generateCountry(),
-  genres: generateGenres(),
-  description: generateDiscription(),
-  ageRating: generateAgeRating(),
+  genre: generateGenres('one'),
+  genres: generateGenresInSpan(),
+  quantityCommentsPreview: generateComments(),
   comments: commentsValue,
   //передавать сюда реальное количество комментариев из массива ключа выше
   quantityComments: commentsValue.length,
-});
-//генерируем карточку фильма
-export const generateFilmCard = () => ({
-  poster: generatePoster(),
-  title: generateTitle(),
-  rating: getRandomFloat(0, 10),
-  releaseDate: generateReleaseDate(),
-  runtime: generateRuntime(),
-  genres: generateGenres('one'),
+  country: generateCountry(),
   description: generateDiscription(),
-  quantityComments: generateComments(),
+  ageRating: generateAgeRating(),
 });
