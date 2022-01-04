@@ -1,14 +1,8 @@
 //https://day.js.org/docs/en/display/format
 import dayjs from 'dayjs';
+import {getRandomInteger} from './../utilities.js';
 
-// Функция из интернета по генерации случайного числа из диапазона
-// Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
 
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
 //Функция по генерации случайного числа с округлением до десятых
 const getRandomFloat = (min, max) => {
   const randomNumber = Math.random() * (max - min) + min;
@@ -200,23 +194,23 @@ const generateDiscription = () => {
 };
 const generateGenresInSpan = () => {
   const spanGenres = [
-    '<span class="film-details__genre">Action</span>',
-    '<span class="film-details__genre">Comedy</span>',
-    '<span class="film-details__genre">Drama</span>',
-    '<span class="film-details__genre">Fantasy</span>',
-    '<span class="film-details__genre">Horror</span>',
-    '<span class="film-details__genre">Mystery</span>',
-    '<span class="film-details__genre">Romance</span>',
-    '<span class="film-details__genre">Thriller</span>',
+    'Action',
+    'Comedy',
+    'Drama',
+    'Fantasy',
+    'Horror',
+    'Mystery',
+    'Romance',
+    'Thriller',
   ];
 
   const shuffled = spanGenres.sort(() => .5 - Math.random());
 
   const selected = shuffled.slice(0, 3);
-  return selected.join('');
+  return selected;
 };
 //создаем функцию, которая генерирует объекты с комментариями
-const generateComments   = (returnValue) => {
+export const generateComment = () => {
   //генерим путь к смайлу
   const generateEmoji = () => {
     const emoji = [
@@ -258,42 +252,16 @@ const generateComments   = (returnValue) => {
     const selected = shuffled.slice(0,n);
     return selected;
   };
-  const randomIndexForComments = getRandomInteger(0, 5);
-  const comments = [];
-  for (let i=0;i<randomIndexForComments;i++) {
-    comments[i] = {
-      emoji: generateEmoji(),
-      date: generateDate(),
-      author: generateAuthor(),
-      message: generateMessage(),
-    };
-  }
-  if (returnValue === 'arrow') {
-    return comments;
-  } else {
-    return comments.length;
-  }
+
+  const comment = {
+    emoji: generateEmoji(),
+    date: generateDate(),
+    author: generateAuthor(),
+    message: generateMessage(),
+  };
+  return comment;
 };
-const generateCommentsInTags = () => {
-  const liComments= [
-    '<li class="film-details__comment">Comments 1</li>',
-    '<li class="film-details__comment">Comments 2</li>',
-    '<li class="film-details__comment">Comments 3</li>',
-    '<li class="film-details__comment">Comments 4</li>',
-    '<li class="film-details__comment">Comments 5</li>',
-    '<li class="film-details__comment">Comments 6</li>',
-    '<li class="film-details__comment">Comments 7</li>',
-    '<li class="film-details__comment">Comments 8</li>',
-  ];
-  const n = getRandomInteger(1, 5);
 
-  const shuffled = liComments.sort(() => .5 - Math.random());
-
-  const selected = shuffled.slice(0, n);
-  return selected.join('');
-
-};
-const commentsValue = generateCommentsInTags();
 
 //генерируем карточку фильма
 export const generateFilmCard = () => ({
@@ -309,10 +277,10 @@ export const generateFilmCard = () => ({
   runtime: generateRuntime(),
   genre: generateGenres('one'),
   genres: generateGenresInSpan(),
-  quantityCommentsPreview: generateComments(),
-  comments: commentsValue,
+  //quantityCommentsPreview: generateComments(),
+  //comment: generateComment(),
   //передавать сюда реальное количество комментариев из массива ключа выше
-  quantityComments: commentsValue.length,
+  //quantityComments: commentsValue.length,
   country: generateCountry(),
   description: generateDiscription(),
   ageRating: generateAgeRating(),
