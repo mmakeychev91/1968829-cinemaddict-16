@@ -1,22 +1,32 @@
+import dayjs from 'dayjs';
+import {addClassIfTrue} from './../utilities.js';
 export const createFilmCardTemplate = (card) => {
-  const {title, poster, rating, releaseDate, runtime, genre, description, quantityCommentsPreview} = card;
+  const activeClass = 'film-card__controls-item--active';
+  const {title, poster, rating, releaseDate, runtime, genres, description, comments, isWatchlist, isWatched, isFavorite} = card;
+  const dateTemplate = () => {
+    const now = dayjs();
+    return now.add(releaseDate, 'day').format('YYYY ');
+  };
+  const callDescriptionTemplate = () =>
+    //Добавить условие: "Если описание фильма больше 140 символов, то в карточке отображается 139 символов описания и знак многоточие (…)."
+    description;
   return `<article class="film-card">
           <a class="film-card__link">
             <h3 class="film-card__title">${title}</h3>
             <p class="film-card__rating">${rating}</p>
             <p class="film-card__info">
-              <span class="film-card__year">${releaseDate}</span>
+              <span class="film-card__year">${dateTemplate()}</span>
               <span class="film-card__duration">${runtime}</span>
-              <span class="film-card__genre">${genre}</span>
+              <span class="film-card__genre">${genres[0]}</span>
             </p>
             <img src=${poster} alt="" class="film-card__poster">
-            <p class="film-card__description">${description}</p>
-            <span class="film-card__comments">${quantityCommentsPreview} comments</span>
+            <p class="film-card__description">${callDescriptionTemplate()}</p>
+            <span class="film-card__comments">${comments.length} comments</span>
           </a>
           <div class="film-card__controls">
-            <button class="film-card__controls-item film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-            <button class="film-card__controls-item film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-            <button class="film-card__controls-item film-card__controls-item--favorite" type="button">Mark as favorite</button>
+            <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${addClassIfTrue(isWatchlist, activeClass)}" type="button">Add to watchlist</button>
+            <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${addClassIfTrue(isWatched,activeClass)}" type="button">Mark as watched</button>
+            <button class="film-card__controls-item film-card__controls-item--favorite ${addClassIfTrue(isFavorite,activeClass)}" type="button">Mark as favorite</button>
           </div>
         </article>`;
 };

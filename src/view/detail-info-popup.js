@@ -1,6 +1,8 @@
-import {getRandomInteger} from './../utilities.js';
-import {generateComment} from './../mock/film';
+import dayjs from 'dayjs';
+import {addClassIfTrue} from './../utilities.js';
+
 export const createDetailInfoPopupTemplate = (detailCard) => {
+  const activeClass = 'film-details__control-button--active';
   const {
     poster,
     title,
@@ -9,39 +11,55 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
     director,
     writers,
     actors,
-    fullReleaseDate,
+    releaseDate,
     runtime,
     country,
     genres,
     description,
     ageRating,
+    comments,
+    isWatchlist,
+    isWatched,
+    isFavorite,
   } = detailCard;
-  const generateComments = () => {
-    const randomIndexForComments = getRandomInteger(0, 5);
-    const comments = [];
-    for (let i=0;i<randomIndexForComments;i++) {
-      comments[i] = generateComment();
-    }
-    return comments;
+  const dateTemplate = () => {
+    const now = dayjs();
+    return now.add(releaseDate, 'day').format('DD MMMM YYYY ');
   };
-  const callGenerateComments = generateComments();
-  console.log(callGenerateComments);
+  //генерим комменты
   const commentTemplate = () => {
-    for (let i=0; i<callGenerateComments.length;i++) {
-      const value =  `<li class="film-details__comment">
+    let value = '';
+    for (const callGenerateComment of comments) {
+      value +=  `<li class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="${callGenerateComments[i].emoji}" width="55" height="55" alt="emoji-smile">
+                <img src="${callGenerateComment.emoji}" width="55" height="55" alt="emoji-smile">
               </span>
               <div>
-                <p class="film-details__comment-text">${callGenerateComments[i].message}</p>
+                <p class="film-details__comment-text">${callGenerateComment.message}</p>
                 <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">${callGenerateComments[i].author}</span>
-                  <span class="film-details__comment-day">${callGenerateComments[i].day}</span>
+                  <span class="film-details__comment-author">${callGenerateComment.author}</span>
+                  <span class="film-details__comment-day">${callGenerateComment.date}</span>
                   <button class="film-details__comment-delete">Delete</button>
                 </p>
               </div>
           </li>`;
-      return value;
+    }
+    return value;
+  };
+  //генерим жанры
+  const callGenerateGenres = genres;
+  const genresTemplate = () => {
+    let value = '';
+    for (const callGenerateGenre of callGenerateGenres) {
+      value += `<span class="film-details__genre">${callGenerateGenre}</span>`;
+    }
+    return value;
+  };
+  const genresTitleTemplate = () => {
+    if (callGenerateGenres.length !== 1) {
+      return 'Genres';
+    } else {
+      return 'Genre';
     }
   };
   return `<section class="film-details">
@@ -84,7 +102,7 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${fullReleaseDate}</td>
+              <td class="film-details__cell">${dateTemplate()}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
@@ -95,11 +113,9 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
               <td class="film-details__cell">${country}</td>
             </tr>
             <tr class="film-details__row">
-              <td class="film-details__term">Genres</td>
+              <td class="film-details__term">${genresTitleTemplate()}</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">${genres[0]}</span>
-                <span class="film-details__genre">${genres[1]}</span>
-                <span class="film-details__genre">${genres[2]}</span>
+                ${genresTemplate()}
               </td>
             </tr>
           </table>
@@ -111,18 +127,17 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
       </div>
 
       <section class="film-details__controls">
-        <button type="button" class="film-details__control-button film-details__control-button--watchlist" id="watchlist" name="watchlist">Add to watchlist</button>
-        <button type="button" class="film-details__control-button film-details__control-button--active film-details__control-button--watched" id="watched" name="watched">Already watched</button>
-        <button type="button" class="film-details__control-button film-details__control-button--favorite" id="favorite" name="favorite">Add to favorites</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watchlist ${addClassIfTrue(isWatchlist, activeClass)}" id="watchlist" name="watchlist">Add to watchlist</button>
+        <button type="button" class="film-details__control-button film-details__control-button--watched ${addClassIfTrue(isWatched, activeClass)}" id="watched" name="watched">Already watched</button>
+        <button type="button" class="film-details__control-button film-details__control-button--favorite ${addClassIfTrue(isFavorite, activeClass)}" id="favorite" name="favorite">Add to favorites</button>
       </section>
     </div>
 
     <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count"></span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
         <ul class="film-details__comments-list">
             ${commentTemplate()}
-            
         </ul>
 
         <div class="film-details__new-comment">

@@ -59,14 +59,9 @@ const lorem = [
   'In rutrum ac purus sit amet tempus.',
 ];
 
-const generateReleaseDate = (format) => {
-  const now = dayjs();
+const generateReleaseDate = () => {
   const randomIndexForDay = getRandomInteger(0, -36500);
-  if (format === 'full') {
-    return now.add(randomIndexForDay, 'day').format('DD MMMM YYYY ');
-  } else {
-    return now.add(randomIndexForDay, 'day').format('YYYY ');
-  }
+  return randomIndexForDay;
 };
 const generateRuntime = () => {
   const h = getRandomInteger(1, 3);
@@ -162,7 +157,7 @@ const generateGenres = (genreQuantity) => {
   if (genreQuantity === 'one') {
     n = 1;
   } else {
-    n = 3;
+    n = getRandomInteger(1,3);
   }
   const shuffled = genres.sort(() => .5 - Math.random());
 
@@ -192,77 +187,71 @@ const generateDiscription = () => {
   const selected = shuffled.slice(0, n);
   return selected;
 };
-const generateGenresInSpan = () => {
-  const spanGenres = [
-    'Action',
-    'Comedy',
-    'Drama',
-    'Fantasy',
-    'Horror',
-    'Mystery',
-    'Romance',
-    'Thriller',
-  ];
+const generateComments = () => {
+  const generateComment = () => {
+    //генерим путь к смайлу
+    const generateEmoji = () => {
+      const emoji = [
+        './images/emoji/angry.png',
+        './images/emoji/puke.png',
+        './images/emoji/sleeping.png',
+        './images/emoji/smile.png',
+      ];
+      const randomIndexForSmile = getRandomInteger(0, emoji.length - 1);
+      return emoji[randomIndexForSmile];
+    };
+    //генерим дату
+    const generateDate = () => {
+      const now = dayjs();
+      const randomIndexForDay = getRandomInteger(0, -365);
 
-  const shuffled = spanGenres.sort(() => .5 - Math.random());
+      return now.add(randomIndexForDay,'day').format('YYYY/MM/DD HH:mm');
+    };
+    //генерим автора
+    const generateAuthor = () => {
+      const authors = [
+        'Kareem Abdul-Jabbar',
+        'Ray Allen',
+        'Giannis Antetokounmpo',
+        'Carmelo Anthony',
+        'Nate Archibald',
+        'Paul Arizin',
+        'Charles Barkley',
+      ];
+      const randomIndexForAuthor = getRandomInteger(0, authors.length - 1);
+      return authors[randomIndexForAuthor];
+    };
+    //генерим сообщение
+    const generateMessage = () => {
+      const n = getRandomInteger(1,3);
 
-  const selected = shuffled.slice(0, 3);
-  return selected;
+      const shuffled = lorem.sort(()=> .5 - Math.random());
+
+      const selected = shuffled.slice(0,n);
+      return selected;
+    };
+
+    const comment = {
+      emoji: generateEmoji(),
+      date: generateDate(),
+      author: generateAuthor(),
+      message: generateMessage(),
+    };
+    return comment;
+  };
+  const randomIndexForComments = getRandomInteger(0, 300);
+  const comments = [];
+  for (let i=0;i<randomIndexForComments;i++) {
+    comments[i] = generateComment();
+  }
+  return comments;
+  //создаем функцию, которая генерирует объекты с комментариями
 };
-//создаем функцию, которая генерирует объекты с комментариями
-export const generateComment = () => {
-  //генерим путь к смайлу
-  const generateEmoji = () => {
-    const emoji = [
-      './images/emoji/angry.png',
-      './images/emoji/puke.png',
-      './images/emoji/sleeping.png',
-      './images/emoji/smile.png',
-    ];
-    const randomIndexForSmile = getRandomInteger(0, emoji.length - 1);
-    return emoji[randomIndexForSmile];
-  };
-  //генерим дату
-  const generateDate = () => {
-    const now = dayjs();
-    const randomIndexForDay = getRandomInteger(0, -365);
-
-    return now.add(randomIndexForDay,'day').format('YYYY/MM/DD HH:mm');
-  };
-  //генерим автора
-  const generateAuthor = () => {
-    const authors = [
-      'Kareem Abdul-Jabbar',
-      'Ray Allen',
-      'Giannis Antetokounmpo',
-      'Carmelo Anthony',
-      'Nate Archibald',
-      'Paul Arizin',
-      'Charles Barkley',
-    ];
-    const randomIndexForAuthor = getRandomInteger(0, authors.length - 1);
-    return authors[randomIndexForAuthor];
-  };
-  //генерим сообщение
-  const generateMessage = () => {
-    const n = getRandomInteger(1,3);
-
-    const shuffled = lorem.sort(()=> .5 - Math.random());
-
-    const selected = shuffled.slice(0,n);
-    return selected;
-  };
-
-  const comment = {
-    emoji: generateEmoji(),
-    date: generateDate(),
-    author: generateAuthor(),
-    message: generateMessage(),
-  };
-  return comment;
+const generateBoolean = () => {
+  const boolean = [true, false];
+  const n = getRandomInteger(0, 1);
+  return boolean[n];
 };
-
-
 //генерируем карточку фильма
 export const generateFilmCard = () => ({
   poster: generatePoster(),
@@ -273,15 +262,13 @@ export const generateFilmCard = () => ({
   writers: generateWriters(),
   actors: generateActors(),
   releaseDate: generateReleaseDate(),
-  fullReleaseDate: generateReleaseDate('full'),
   runtime: generateRuntime(),
-  genre: generateGenres('one'),
-  genres: generateGenresInSpan(),
-  //quantityCommentsPreview: generateComments(),
-  //comment: generateComment(),
-  //передавать сюда реальное количество комментариев из массива ключа выше
-  //quantityComments: commentsValue.length,
-  country: generateCountry(),
+  genres: generateGenres(),
+  comments: generateComments(),
   description: generateDiscription(),
   ageRating: generateAgeRating(),
+  country: generateCountry(),
+  isWatchlist: generateBoolean(),
+  isWatched: generateBoolean(),
+  isFavorite: generateBoolean(),
 });

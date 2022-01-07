@@ -1,4 +1,1 @@
-export const createFilmQuantityTemplate = () => (
-  `<p>130 291 movies inside</p>
-  `
-);
+export const createFilmQuantityTemplate = (filmQuantity) => (`<p>${filmQuantity.toLocaleString('ru')} movies inside</p>`);
