@@ -2,6 +2,19 @@
 import dayjs from 'dayjs';
 import {getRandomInteger} from './../utilities.js';
 
+const LOREM = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  'Cras aliquet varius magna, non porta ligula feugiat eget.',
+  'Fusce tristique felis at fermentum pharetra.',
+  'Aliquam id orci ut lectus varius viverra.',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+  'Sed sed nisi sed augue convallis suscipit in sed felis.',
+  'Aliquam erat volutpat.',
+  'Nunc fermentum tortor ac porta dapibus.',
+  'In rutrum ac purus sit amet tempus.',
+];
 
 //Функция по генерации случайного числа с округлением до десятых
 const getRandomFloat = (min, max) => {
@@ -45,19 +58,6 @@ const generatePoster = () => {
 
   return posters[randomIndex];
 };
-const lorem = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget.',
-  'Fusce tristique felis at fermentum pharetra.',
-  'Aliquam id orci ut lectus varius viverra.',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-  'Sed sed nisi sed augue convallis suscipit in sed felis.',
-  'Aliquam erat volutpat.',
-  'Nunc fermentum tortor ac porta dapibus.',
-  'In rutrum ac purus sit amet tempus.',
-];
 
 const generateReleaseDate = () => {
   const randomIndexForDay = getRandomInteger(0, -36500);
@@ -121,7 +121,7 @@ const generateActors = () => {
 
   ];
 
-  const n = getRandomInteger(3, 3);
+  const n = getRandomInteger(1, 3);
 
   const shuffled = actors.sort(() => .5 - Math.random());
 
@@ -142,7 +142,7 @@ const generateCountry = () => {
 
   return countries[randomIndex];
 };
-const generateGenres = (genreQuantity) => {
+const generateGenres = (min) => {
   const genres = [
     'Action',
     'Comedy',
@@ -154,7 +154,7 @@ const generateGenres = (genreQuantity) => {
     'Thriller',
   ];
   let n;
-  if (genreQuantity === 'one') {
+  if (min === 1) {
     n = 1;
   } else {
     n = getRandomInteger(1,3);
@@ -179,10 +179,10 @@ const generateAgeRating = () => {
   return ageRating[randomIndex];
 };
 //генерируем пояснения к фильму
-const generateDiscription = () => {
+const generateDescription = () => {
   const n = getRandomInteger(1, 5);
 
-  const shuffled = lorem.sort(() => .5 - Math.random());
+  const shuffled = LOREM.sort(() => .5 - Math.random());
 
   const selected = shuffled.slice(0, n);
   return selected;
@@ -225,7 +225,7 @@ const generateComments = () => {
     const generateMessage = () => {
       const n = getRandomInteger(1,3);
 
-      const shuffled = lorem.sort(()=> .5 - Math.random());
+      const shuffled = LOREM.sort(()=> .5 - Math.random());
 
       const selected = shuffled.slice(0,n);
       return selected;
@@ -247,11 +247,7 @@ const generateComments = () => {
   return comments;
   //создаем функцию, которая генерирует объекты с комментариями
 };
-const generateBoolean = () => {
-  const boolean = [true, false];
-  const n = getRandomInteger(0, 1);
-  return boolean[n];
-};
+
 //генерируем карточку фильма
 export const generateFilmCard = () => ({
   poster: generatePoster(),
@@ -265,10 +261,10 @@ export const generateFilmCard = () => ({
   runtime: generateRuntime(),
   genres: generateGenres(),
   comments: generateComments(),
-  description: generateDiscription(),
+  description: generateDescription(),
   ageRating: generateAgeRating(),
   country: generateCountry(),
-  isWatchlist: generateBoolean(),
-  isWatched: generateBoolean(),
-  isFavorite: generateBoolean(),
+  isWatchlist: Math.random() > 0.5,
+  isWatched: Math.random() > 0.5,
+  isFavorite: Math.random() > 0.5,
 });

@@ -53,8 +53,8 @@ if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
   loadMoreButton.addEventListener('click', (evt) => {
     evt.preventDefault();
     filmCards
-        .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
-        .forEach((filmCard) => renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCard), RenderPosition.BEFOREEND));
+      .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
+      .forEach((filmCard) => renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCard), RenderPosition.BEFOREEND));
 
     renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
 

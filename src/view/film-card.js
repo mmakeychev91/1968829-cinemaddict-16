@@ -1,8 +1,19 @@
 import dayjs from 'dayjs';
 import {addClassIfTrue} from './../utilities.js';
-export const createFilmCardTemplate = (card) => {
+export const createFilmCardTemplate = ({
+  title,
+  poster,
+  rating,
+  releaseDate,
+  runtime,
+  genres,
+  description,
+  comments,
+  isWatchlist,
+  isWatched,
+  isFavorite
+}) => {
   const activeClass = 'film-card__controls-item--active';
-  const {title, poster, rating, releaseDate, runtime, genres, description, comments, isWatchlist, isWatched, isFavorite} = card;
   const dateTemplate = () => {
     const now = dayjs();
     return now.add(releaseDate, 'day').format('YYYY ');

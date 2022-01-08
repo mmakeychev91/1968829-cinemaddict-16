@@ -6,8 +6,10 @@ export const getRandomInteger = (a = 0, b = 1) => {
 
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
-export const addClassIfTrue = (boolean, className) => {
-  if (boolean === true) {
+export const addClassIfTrue = (condition, className) => {
+  if (condition === true) {
     return className;
+  } else {
+    return '';
   }
 };

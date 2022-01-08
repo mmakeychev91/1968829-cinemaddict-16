@@ -1,9 +1,8 @@
 import dayjs from 'dayjs';
 import {addClassIfTrue} from './../utilities.js';
 
-export const createDetailInfoPopupTemplate = (detailCard) => {
-  const activeClass = 'film-details__control-button--active';
-  const {
+export const createDetailInfoPopupTemplate = (
+  {
     poster,
     title,
     originalTitle,
@@ -21,48 +20,22 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
     isWatchlist,
     isWatched,
     isFavorite,
-  } = detailCard;
+  }
+) => {
+  const activeClass = 'film-details__control-button--active';
   const dateTemplate = () => {
     const now = dayjs();
     return now.add(releaseDate, 'day').format('DD MMMM YYYY ');
   };
-  //генерим комменты
-  const commentTemplate = () => {
-    let value = '';
-    for (const callGenerateComment of comments) {
-      value +=  `<li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="${callGenerateComment.emoji}" width="55" height="55" alt="emoji-smile">
-              </span>
-              <div>
-                <p class="film-details__comment-text">${callGenerateComment.message}</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">${callGenerateComment.author}</span>
-                  <span class="film-details__comment-day">${callGenerateComment.date}</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-          </li>`;
-    }
-    return value;
-  };
-  //генерим жанры
-  const callGenerateGenres = genres;
-  const genresTemplate = () => {
-    let value = '';
-    for (const callGenerateGenre of callGenerateGenres) {
-      value += `<span class="film-details__genre">${callGenerateGenre}</span>`;
-    }
-    return value;
-  };
+
   const genresTitleTemplate = () => {
-    if (callGenerateGenres.length !== 1) {
+    if (genres.length !== 1) {
       return 'Genres';
     } else {
       return 'Genre';
     }
   };
-  return `<section class="film-details visually-hidden">
+  return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">
@@ -115,7 +88,7 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
             <tr class="film-details__row">
               <td class="film-details__term">${genresTitleTemplate()}</td>
               <td class="film-details__cell">
-                ${genresTemplate()}
+                ${genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('')}
               </td>
             </tr>
           </table>
@@ -137,7 +110,19 @@ export const createDetailInfoPopupTemplate = (detailCard) => {
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
         <ul class="film-details__comments-list">
-            ${commentTemplate()}
+            ${comments.map((comment) => `<li class="film-details__comment">
+            <span class="film-details__comment-emoji">
+              <img src="${comment.emoji}" width="55" height="55" alt="emoji-smile">
+            </span>
+            <div>
+              <p class="film-details__comment-text">${comment.message}</p>
+              <p class="film-details__comment-info">
+                <span class="film-details__comment-author">${comment.author}</span>
+                <span class="film-details__comment-day">${comment.date}</span>
+                <button class="film-details__comment-delete">Delete</button>
+              </p>
+            </div>
+            </li>`).join('')}
         </ul>
 
         <div class="film-details__new-comment">
