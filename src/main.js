@@ -16,7 +16,7 @@ const RenderPosition = {
   AFTEREND: 'afterend',
 };
 
-const FILM_CARDS_AMOUNT = 5;
+const FILM_CARDS_AMOUNT_PER_STEP = 5;
 const filmCards = Array.from({length: 25}, generateFilmCard);
 
 const renderTemplate = (container, template, place) => {
@@ -40,10 +40,30 @@ const mainFilmListContainer = mainFilmList.querySelector('.films-list__container
 const body = document.querySelector('body');
 const footer = document.querySelector('footer');
 
-for (let i =0; i < FILM_CARDS_AMOUNT; i++) {
+for (let i =0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
   renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCards[i]),RenderPosition.BEFOREEND);
 }
-renderTemplate(mainFilmList, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
+
+
+if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
+  let renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
+  renderTemplate(mainFilmList, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
+  const loadMoreButton = mainFilmList.querySelector('.films-list__show-more');
+
+  loadMoreButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    filmCards
+        .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
+        .forEach((filmCard) => renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCard), RenderPosition.BEFOREEND));
+
+    renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
+
+    if (renderedFilmCardCount >= filmCards.length) {
+      loadMoreButton.remove();
+    }
+  });
+}
+
 renderTemplate(header, createRankTemplate('Movie Buff'), RenderPosition.BEFOREEND);
 renderTemplate(body, createDetailInfoPopupTemplate(filmCards[0]), RenderPosition.BEFOREEND);
 renderTemplate(footer, createFilmQuantityTemplate(filmCards.length), RenderPosition.BEFOREEND);
