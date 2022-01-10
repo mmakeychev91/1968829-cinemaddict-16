@@ -1,4 +1,8 @@
-export const createMenuTemplate = (watchlist, history, favorites) => (
+import {createElement} from '../render';
+
+// Функцию для генерации HTML-разметки можно превратить в метод класса,
+// однако делать мы этого не будем, чтобы не раздувать diff изменений
+const createSiteMenuTemplate = (watchlist,history,favorites) => (
   `<nav class="main-navigation">
     <div class="main-navigation__items">
       <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
@@ -14,3 +18,23 @@ export const createMenuTemplate = (watchlist, history, favorites) => (
       <li><a href="#" class="sort__button">Sort by rating</a></li>
     </ul>`
 );
+
+export default class MenuView {
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createSiteMenuTemplate();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

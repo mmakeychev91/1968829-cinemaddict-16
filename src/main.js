@@ -1,4 +1,4 @@
-import {createMenuTemplate} from './view/menu.js';
+import MenuView from './view/menu.js';
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createRankTemplate} from './view/rank.js';
@@ -8,20 +8,10 @@ import {createFilmWrapper} from './view/films-list.js';
 import {createStatsTemplate} from './view/stats.js';
 import {createSortTemplate} from './view/sort.js';
 import {generateFilmCard} from './mock/film.js';
-
-const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
+import {renderTemplate, renderElement, RenderPosition} from './render';
 
 const FILM_CARDS_AMOUNT_PER_STEP = 5;
 const filmCards = Array.from({length: 25}, generateFilmCard);
-
-const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 const header = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -29,7 +19,7 @@ const sampleWatchlist = filmCards.filter((obj) => obj.isWatchlist === true).leng
 const sampleWatched = filmCards.filter((obj) => obj.isWatched === true).length;
 const sampleFavorite = filmCards.filter((obj) => obj.isFavorite === true).length;
 
-renderTemplate(siteMainElement, createMenuTemplate(sampleWatchlist, sampleWatched, sampleFavorite), RenderPosition.AFTERBEGIN);
+renderElement(siteMainElement, new MenuView().element, RenderPosition.AFTERBEGIN);
 renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(siteMainElement, createStatsTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(siteMainElement, createFilmWrapper(), RenderPosition.BEFOREEND);

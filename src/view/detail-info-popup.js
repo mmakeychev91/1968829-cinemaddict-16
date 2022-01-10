@@ -35,7 +35,7 @@ export const createDetailInfoPopupTemplate = (
       return 'Genre';
     }
   };
-  return `<section class="film-details">
+  return `<section class="film-details visually-hidden">
   <form class="film-details__inner" action="" method="get">
     <div class="film-details__top-container">
       <div class="film-details__close">
