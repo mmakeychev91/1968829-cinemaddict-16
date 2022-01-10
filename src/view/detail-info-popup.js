@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import {addClassIfTrue} from './../utilities.js';
+import {createElement} from '../render';
 
-export const createDetailInfoPopupTemplate = (
+const createDetailInfoPopupTemplate = (
   {
     poster,
     title,
@@ -157,3 +158,28 @@ export const createDetailInfoPopupTemplate = (
   </form>
 </section>`;
 };
+
+export default class DetailInfoPopup {
+    #props;
+    constructor(props) {
+        this.#props = props;
+    }
+
+    #element = null;
+
+    get element() {
+        if (!this.#element) {
+            this.#element = createElement(this.template);
+        }
+
+        return this.#element;
+    }
+
+    get template() {
+        return createDetailInfoPopupTemplate(this.#props);
+    }
+
+    removeElement() {
+        this.#element = null;
+    }
+}

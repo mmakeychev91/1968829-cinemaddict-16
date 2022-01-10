@@ -2,13 +2,19 @@ import {createElement} from '../render';
 
 // Функцию для генерации HTML-разметки можно превратить в метод класса,
 // однако делать мы этого не будем, чтобы не раздувать diff изменений
-const createSiteMenuTemplate = (watchlist,history,favorites) => (
+const createSiteMenuTemplate = (
+  {
+    watchlist,
+    history,
+    favorite,
+  }
+) => (
   `<nav class="main-navigation">
     <div class="main-navigation__items">
       <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
       <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">${watchlist}</span></a>
       <a href="#history" class="main-navigation__item">History <span class="main-navigation__item-count">${history}</span></a>
-      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorites}</span></a>
+      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">${favorite}</span></a>
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>
@@ -20,6 +26,11 @@ const createSiteMenuTemplate = (watchlist,history,favorites) => (
 );
 
 export default class MenuView {
+  #props;
+  constructor(props) {
+    this.#props = props;
+  }
+
   #element = null;
 
   get element() {
@@ -31,7 +42,7 @@ export default class MenuView {
   }
 
   get template() {
-    return createSiteMenuTemplate();
+    return createSiteMenuTemplate(this.#props);
   }
 
   removeElement() {
