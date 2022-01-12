@@ -34,7 +34,19 @@ const body = document.querySelector('body');
 const footer = document.querySelector('footer');
 
 for (let i =0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
-  render(mainFilmListContainer, new FilmCard(filmCards[i]).element,RenderPosition.BEFOREEND);
+  const filmCard =  new FilmCard(filmCards[i]);
+  const detailInfoCardPopup = new DetailInfoPopup(filmCards[i]);
+  render(mainFilmListContainer, filmCard.element,RenderPosition.BEFOREEND);
+  filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+    render(body, detailInfoCardPopup.element, RenderPosition.BEFOREEND);
+      body.classList.add('hide-overflow');
+  });
+  detailInfoCardPopup.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+      body.removeChild(detailInfoCardPopup.element);
+      body.classList.remove('hide-overflow');
+  });
+
+
 }
 
 if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
@@ -46,7 +58,20 @@ if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
     evt.preventDefault();
     filmCards
       .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
-      .forEach((filmCard) => render(mainFilmListContainer, new FilmCard(filmCard).element, RenderPosition.BEFOREEND));
+      .forEach((filmCard) => {
+        const nextFilmCard = new FilmCard(filmCard);
+        const nextDetailInfoPopup = new DetailInfoPopup(filmCard);
+        render(mainFilmListContainer, nextFilmCard.element, RenderPosition.BEFOREEND);
+        nextFilmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+          render(body, nextDetailInfoPopup.element, RenderPosition.BEFOREEND);
+          body.classList.add('hide-overflow');
+        });
+          nextDetailInfoPopup.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+              body.removeChild(nextDetailInfoPopup.element);
+              body.classList.remove('hide-overflow');
+          });
+
+      });
 
     renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
 
@@ -57,6 +82,11 @@ if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
 }
 
 render(header, new Rank('Movie Buff').element, RenderPosition.BEFOREEND);
-render(body, new DetailInfoPopup(filmCards[0]).element, RenderPosition.BEFOREEND);
 render(footer, new FilmQuantity(filmCards.length).element, RenderPosition.BEFOREEND);
+
+
+
+
+
+
 
