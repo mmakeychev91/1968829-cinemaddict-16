@@ -1,28 +1,30 @@
 import dayjs from 'dayjs';
-import {addClassIfTrue} from './../utilities.js';
-import {createElement} from '../render';
+import {
+  addClassIfTrue
+} from './../utilities.js';
+import {
+  createElement
+} from '../render';
 
-const createDetailInfoPopupTemplate = (
-  {
-    poster,
-    title,
-    originalTitle,
-    rating,
-    director,
-    writers,
-    actors,
-    releaseDate,
-    runtime,
-    country,
-    genres,
-    description,
-    ageRating,
-    comments,
-    isWatchlist,
-    isWatched,
-    isFavorite,
-  }
-) => {
+const createDetailInfoPopupTemplate = ({
+  poster,
+  title,
+  originalTitle,
+  rating,
+  director,
+  writers,
+  actors,
+  releaseDate,
+  runtime,
+  country,
+  genres,
+  description,
+  ageRating,
+  comments,
+  isWatchlist,
+  isWatched,
+  isFavorite,
+}) => {
   const activeClass = 'film-details__control-button--active';
   const dateTemplate = () => {
     const now = dayjs();
@@ -160,26 +162,26 @@ const createDetailInfoPopupTemplate = (
 };
 
 export default class DetailInfoPopup {
-    #props;
-    constructor(props) {
-        this.#props = props;
+  #props;
+  constructor(props) {
+    this.#props = props;
+  }
+
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    #element = null;
+    return this.#element;
+  }
 
-    get element() {
-        if (!this.#element) {
-            this.#element = createElement(this.template);
-        }
+  get template() {
+    return createDetailInfoPopupTemplate(this.#props);
+  }
 
-        return this.#element;
-    }
-
-    get template() {
-        return createDetailInfoPopupTemplate(this.#props);
-    }
-
-    removeElement() {
-        this.#element = null;
-    }
+  removeElement() {
+    this.#element = null;
+  }
 }

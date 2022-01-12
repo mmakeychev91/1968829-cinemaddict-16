@@ -1,28 +1,30 @@
-import {createElement} from '../render';
+import {
+  createElement
+} from '../render';
 
 const createFilmQuantityTemplate = (filmQuantity) => (`<p>${filmQuantity.toLocaleString('ru')} movies inside</p>`);
 
 export default class FilmQuantity {
-	#props;
-	constructor(filmQuantity) {
-		this.#props = filmQuantity;
-	}
+  #props;
+  constructor(filmQuantity) {
+    this.#props = filmQuantity;
+  }
 
-	#element = null;
+  #element = null;
 
-	get element() {
-		if (!this.#element) {
-			this.#element = createElement(this.template);
-		}
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
 
-		return this.#element;
-	}
+    return this.#element;
+  }
 
-	get template() {
-		return createFilmQuantityTemplate(this.#props);
-	}
+  get template() {
+    return createFilmQuantityTemplate(this.#props);
+  }
 
-	removeElement() {
-		this.#element = null;
-	}
+  removeElement() {
+    this.#element = null;
+  }
 }

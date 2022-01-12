@@ -1,4 +1,6 @@
-import {createElement} from '../render';
+import {
+  createElement
+} from '../render';
 
 const createStatsTemplate = () => (
   `<section class="statistic visually-hidden">
@@ -52,21 +54,21 @@ const createStatsTemplate = () => (
 );
 
 export default class Stats {
-	#element = null;
+  #element = null;
 
-	get element() {
-		if (!this.#element) {
-			this.#element = createElement(this.template);
-		}
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
 
-		return this.#element;
-	}
+    return this.#element;
+  }
 
-	get template() {
-		return createStatsTemplate();
-	}
+  get template() {
+    return createStatsTemplate();
+  }
 
-	removeElement() {
-		this.#element = null;
-	}
+  removeElement() {
+    this.#element = null;
+  }
 }

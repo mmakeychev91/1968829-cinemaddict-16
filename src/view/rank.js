@@ -1,4 +1,6 @@
-import {createElement} from '../render';
+import {
+  createElement
+} from '../render';
 
 const createRankTemplate = (rank) => (
   `<section class="header__profile profile">
@@ -8,26 +10,26 @@ const createRankTemplate = (rank) => (
 );
 
 export default class Rank {
-	#props;
-	constructor(rank) {
-		this.#props = rank;
-	}
+  #props;
+  constructor(rank) {
+    this.#props = rank;
+  }
 
-	#element = null;
+  #element = null;
 
-	get element() {
-		if (!this.#element) {
-			this.#element = createElement(this.template);
-		}
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
 
-		return this.#element;
-	}
+    return this.#element;
+  }
 
-	get template() {
-		return createRankTemplate(this.#props);
-	}
+  get template() {
+    return createRankTemplate(this.#props);
+  }
 
-	removeElement() {
-		this.#element = null;
-	}
+  removeElement() {
+    this.#element = null;
+  }
 }

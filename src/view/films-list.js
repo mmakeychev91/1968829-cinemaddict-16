@@ -1,4 +1,6 @@
-import {createElement} from '../render';
+import {
+  createElement
+} from '../render';
 
 const createFilmWrapper = () => (
   `<section class="films">
@@ -14,21 +16,21 @@ const createFilmWrapper = () => (
 );
 
 export default class FilmWrapper {
-	#element = null;
+  #element = null;
 
-	get element() {
-		if (!this.#element) {
-			this.#element = createElement(this.template);
-		}
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
 
-		return this.#element;
-	}
+    return this.#element;
+  }
 
-	get template() {
-		return createFilmWrapper();
-	}
+  get template() {
+    return createFilmWrapper();
+  }
 
-	removeElement() {
-		this.#element = null;
-	}
+  removeElement() {
+    this.#element = null;
+  }
 }
