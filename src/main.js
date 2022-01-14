@@ -51,8 +51,16 @@ for (let i = 0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++)
     body.removeChild(detailInfoCardPopup.element);
     body.classList.remove('hide-overflow');
   });
+  document.addEventListener('keydown', (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      if (body.classList.contains('hide-overflow')) {
+        evt.preventDefault();
+        body.removeChild(detailInfoCardPopup.element);
+        body.classList.remove('hide-overflow');
+      }
 
-
+    }
+  });
 }
 
 if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
@@ -76,7 +84,6 @@ if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
           body.removeChild(nextDetailInfoPopup.element);
           body.classList.remove('hide-overflow');
         });
-
       });
 
     renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
