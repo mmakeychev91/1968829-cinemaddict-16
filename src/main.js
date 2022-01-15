@@ -46,20 +46,19 @@ for (let i = 0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++)
   filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
     render(body, detailInfoCardPopup.element, RenderPosition.BEFOREEND);
     body.classList.add('hide-overflow');
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        body.removeChild(detailInfoCardPopup.element);
+        body.classList.remove('hide-overflow');
+        document.removeEventListener('keydown', onEscKeyDown);
+      };
+    };
+    document.addEventListener('keydown', onEscKeyDown);
   });
   detailInfoCardPopup.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
     body.removeChild(detailInfoCardPopup.element);
     body.classList.remove('hide-overflow');
-  });
-  document.addEventListener('keydown', (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      if (body.classList.contains('hide-overflow')) {
-        evt.preventDefault();
-        body.removeChild(detailInfoCardPopup.element);
-        body.classList.remove('hide-overflow');
-      }
-
-    }
   });
 }
 
@@ -79,6 +78,15 @@ if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
         nextFilmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
           render(body, nextDetailInfoPopup.element, RenderPosition.BEFOREEND);
           body.classList.add('hide-overflow');
+          const onEscKeyDown = (evt) => {
+            if (evt.key === 'Escape' || evt.key === 'Esc') {
+              evt.preventDefault();
+              body.removeChild(nextDetailInfoPopup.element);
+              body.classList.remove('hide-overflow');
+              document.removeEventListener('keydown', onEscKeyDown);
+            }
+          };
+          document.addEventListener('keydown', onEscKeyDown);
         });
         nextDetailInfoPopup.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
           body.removeChild(nextDetailInfoPopup.element);
