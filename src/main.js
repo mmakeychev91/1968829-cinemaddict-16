@@ -1,60 +1,98 @@
-import {createMenuTemplate} from './view/menu.js';
-import {createFilmCardTemplate} from './view/film-card.js';
-import {createShowMoreButtonTemplate} from './view/show-more-button.js';
-import {createRankTemplate} from './view/rank.js';
-import {createDetailInfoPopupTemplate} from './view/detail-info-popup.js';
-import {createFilmQuantityTemplate} from './view/film-quantity.js';
-import {createFilmWrapper} from './view/films-list.js';
-import {createStatsTemplate} from './view/stats.js';
-import {createSortTemplate} from './view/sort.js';
-import {generateFilmCard} from './mock/film.js';
-
-const RenderPosition = {
-  BEFOREBEGIN: 'beforebegin',
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-  AFTEREND: 'afterend',
-};
+import MenuView from './view/menu.js';
+import FilmCard from './view/film-card.js';
+import ShowMoreButton from './view/show-more-button.js';
+import Rank from './view/rank.js';
+import DetailInfoPopup from './view/detail-info-popup.js';
+import FilmQuantity from './view/film-quantity.js';
+import FilmWrapper from './view/films-list.js';
+import Stats from './view/stats.js';
+import Sort from './view/sort.js';
+import {
+  generateFilmCard
+} from './mock/film.js';
+import {
+  render,
+  RenderPosition
+} from './render';
 
 const FILM_CARDS_AMOUNT_PER_STEP = 5;
-const filmCards = Array.from({length: 25}, generateFilmCard);
-
-const renderTemplate = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
+const filmCards = Array.from({
+  length: 25
+}, generateFilmCard);
 
 const header = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
-const sampleWatchlist = filmCards.filter((obj) => obj.isWatchlist === true).length;
-const sampleWatched = filmCards.filter((obj) => obj.isWatched === true).length;
-const sampleFavorite = filmCards.filter((obj) => obj.isFavorite === true).length;
 
-renderTemplate(siteMainElement, createMenuTemplate(sampleWatchlist, sampleWatched, sampleFavorite), RenderPosition.AFTERBEGIN);
-renderTemplate(siteMainElement, createSortTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(siteMainElement, createStatsTemplate(), RenderPosition.BEFOREEND);
-renderTemplate(siteMainElement, createFilmWrapper(), RenderPosition.BEFOREEND);
+render(siteMainElement, new MenuView({
+  watchlist: filmCards.filter((obj) => obj.isWatchlist === true).length,
+  history: filmCards.filter((obj) => obj.isWatched === true).length,
+  favorite: filmCards.filter((obj) => obj.isFavorite === true).length,
+}).element, RenderPosition.AFTERBEGIN);
+
+const rank = new Rank('Movie Buff');
+const sort = new Sort();
+render(header, rank.element, RenderPosition.BEFOREEND);
+render(siteMainElement, sort.element, RenderPosition.BEFOREEND);
+render(siteMainElement, new Stats().element, RenderPosition.BEFOREEND);
+
+const filmWrapper = new FilmWrapper();
+render(siteMainElement, filmWrapper.element, RenderPosition.BEFOREEND);
 
 const filmsLists = siteMainElement.querySelector('.films');
 const mainFilmList = filmsLists.querySelector('.films-list');
 const mainFilmListContainer = mainFilmList.querySelector('.films-list__container');
+const filmListTitle = filmWrapper.element.querySelector('.films-list__title');
 const body = document.querySelector('body');
 const footer = document.querySelector('footer');
 
-for (let i =0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
-  renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCards[i]),RenderPosition.BEFOREEND);
+if (filmCards.length === 0) {
+  filmListTitle.textContent = 'There are no movies in our database';
+  siteMainElement.removeChild(sort.element);
+  header.removeChild(rank.element);
+  mainFilmList.removeChild(mainFilmListContainer);
 }
 
+const createFilmCards = (filmCard, detailInfoCardPopup) => {
+  render(mainFilmListContainer, filmCard.element, RenderPosition.BEFOREEND);
+  filmCard.element.querySelector('.film-card__link').addEventListener('click', () => {
+    render(body, detailInfoCardPopup.element, RenderPosition.BEFOREEND);
+    body.classList.add('hide-overflow');
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        body.removeChild(detailInfoCardPopup.element);
+        body.classList.remove('hide-overflow');
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+    document.addEventListener('keydown', onEscKeyDown);
+  });
+  detailInfoCardPopup.element.querySelector('.film-details__close-btn').addEventListener('click', () => {
+    body.removeChild(detailInfoCardPopup.element);
+    body.classList.remove('hide-overflow');
+  });
+};
+
+for (let i = 0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
+  const filmCard = new FilmCard(filmCards[i]);
+  const detailInfoCardPopup = new DetailInfoPopup(filmCards[i]);
+  createFilmCards(filmCard, detailInfoCardPopup);
+}
 
 if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
   let renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
-  renderTemplate(mainFilmList, createShowMoreButtonTemplate(), RenderPosition.BEFOREEND);
+  render(mainFilmList, new ShowMoreButton().element, RenderPosition.BEFOREEND);
   const loadMoreButton = mainFilmList.querySelector('.films-list__show-more');
 
   loadMoreButton.addEventListener('click', (evt) => {
     evt.preventDefault();
     filmCards
       .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
-      .forEach((filmCard) => renderTemplate(mainFilmListContainer, createFilmCardTemplate(filmCard), RenderPosition.BEFOREEND));
+      .forEach((filmCard) => {
+        const nextFilmCard = new FilmCard(filmCard);
+        const nextDetailInfoPopup = new DetailInfoPopup(filmCard);
+        createFilmCards(nextFilmCard, nextDetailInfoPopup);
+      });
 
     renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
 
@@ -64,7 +102,4 @@ if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
   });
 }
 
-renderTemplate(header, createRankTemplate('Movie Buff'), RenderPosition.BEFOREEND);
-renderTemplate(body, createDetailInfoPopupTemplate(filmCards[0]), RenderPosition.BEFOREEND);
-renderTemplate(footer, createFilmQuantityTemplate(filmCards.length), RenderPosition.BEFOREEND);
-
+render(footer, new FilmQuantity(filmCards.length).element, RenderPosition.BEFOREEND);

@@ -1,7 +1,11 @@
-export const createFilmWrapper = () => (
+import {
+  createElement
+} from '../render';
+
+const createFilmWrapper = () => (
   `<section class="films">
     <section class="films-list">
-      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      <h2 class="films-list__title"></h2>
 
       <div class="films-list__container">
 
@@ -10,3 +14,23 @@ export const createFilmWrapper = () => (
 
   </section>`
 );
+
+export default class FilmWrapper {
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmWrapper();
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import {addClassIfTrue} from './../utilities.js';
-export const createFilmCardTemplate = ({
+import {createElement} from '../render';
+
+const createFilmCardTemplate = ({
   title,
   poster,
   rating,
@@ -41,3 +43,28 @@ export const createFilmCardTemplate = ({
           </div>
         </article>`;
 };
+
+export default class FilmCard {
+  #props;
+  constructor(props) {
+    this.#props = props;
+  }
+
+  #element = null;
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createFilmCardTemplate(this.#props);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
