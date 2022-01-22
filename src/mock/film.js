@@ -1,6 +1,8 @@
 //https://day.js.org/docs/en/display/format
 import dayjs from 'dayjs';
-import {getRandomInteger} from './../utilities.js';
+import {
+  getRandomInteger
+} from './../utils/common';
 
 const LOREM = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -157,7 +159,7 @@ const generateGenres = (min) => {
   if (min === 1) {
     n = 1;
   } else {
-    n = getRandomInteger(1,3);
+    n = getRandomInteger(1, 3);
   }
   const shuffled = genres.sort(() => .5 - Math.random());
 
@@ -205,7 +207,7 @@ const generateComments = () => {
       const now = dayjs();
       const randomIndexForDay = getRandomInteger(0, -365);
 
-      return now.add(randomIndexForDay,'day').format('YYYY/MM/DD HH:mm');
+      return now.add(randomIndexForDay, 'day').format('YYYY/MM/DD HH:mm');
     };
     //генерим автора
     const generateAuthor = () => {
@@ -223,11 +225,11 @@ const generateComments = () => {
     };
     //генерим сообщение
     const generateMessage = () => {
-      const n = getRandomInteger(1,3);
+      const n = getRandomInteger(1, 3);
 
-      const shuffled = LOREM.sort(()=> .5 - Math.random());
+      const shuffled = LOREM.sort(() => .5 - Math.random());
 
-      const selected = shuffled.slice(0,n);
+      const selected = shuffled.slice(0, n);
       return selected;
     };
 
@@ -241,7 +243,7 @@ const generateComments = () => {
   };
   const randomIndexForComments = getRandomInteger(0, 300);
   const comments = [];
-  for (let i=0;i<randomIndexForComments;i++) {
+  for (let i = 0; i < randomIndexForComments; i++) {
     comments[i] = generateComment();
   }
   return comments;

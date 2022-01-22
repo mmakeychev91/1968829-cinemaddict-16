@@ -1,14 +1,12 @@
-import {createElement} from '../render';
+import AbstractView from './abstract-view.js';
 
-// Функцию для генерации HTML-разметки можно превратить в метод класса,
-// однако делать мы этого не будем, чтобы не раздувать diff изменений
-const createSiteMenuTemplate = (
-  {
-    watchlist,
-    history,
-    favorite,
-  }
-) => (
+//TO-DO: Функцию для генерации HTML-разметки можно превратить в метод класса,
+//TO-D0: однако делать мы этого не будем, чтобы не раздувать diff изменений
+const createSiteMenuTemplate = ({
+  watchlist,
+  history,
+  favorite,
+}) => (
   `<nav class="main-navigation">
     <div class="main-navigation__items">
       <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
@@ -25,27 +23,14 @@ const createSiteMenuTemplate = (
     </ul>`
 );
 
-export default class MenuView {
+export default class MenuView extends AbstractView {
   #props;
   constructor(props) {
+    super();
     this.#props = props;
-  }
-
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createSiteMenuTemplate(this.#props);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

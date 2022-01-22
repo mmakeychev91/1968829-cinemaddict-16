@@ -1,10 +1,8 @@
 import dayjs from 'dayjs';
 import {
   addClassIfTrue
-} from './../utilities.js';
-import {
-  createElement
-} from '../render';
+} from './../utils/common';
+import AbstractView from './abstract-view.js';
 
 const createDetailInfoPopupTemplate = ({
   poster,
@@ -161,27 +159,24 @@ const createDetailInfoPopupTemplate = ({
 </section>`;
 };
 
-export default class DetailInfoPopup {
+export default class DetailInfoPopup extends AbstractView {
   #props;
   constructor(props) {
+    super();
     this.#props = props;
-  }
-
-  #element = null;
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createDetailInfoPopupTemplate(this.#props);
   }
 
-  removeElement() {
-    this.#element = null;
+  setCloseClickHandler = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
+  }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
   }
 }
