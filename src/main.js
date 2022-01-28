@@ -55,9 +55,12 @@ if (filmCards.length === 0) {
 
 const createFilmCards = (filmCard, detailInfoCardPopup) => {
   render(mainFilmListContainer, filmCard, RenderPosition.BEFOREEND);
+  //#clickFilmCard
   filmCard.setOpenClickHandler(() => {
+    //#renderPopup
     render(body, detailInfoCardPopup, RenderPosition.BEFOREEND);
     body.classList.add('hide-overflow');
+    //#escOpenPopup 
     const onEscKeyDown = (evt) => {
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
@@ -67,13 +70,14 @@ const createFilmCards = (filmCard, detailInfoCardPopup) => {
       }
     };
     document.addEventListener('keydown', onEscKeyDown);
-  });
-  detailInfoCardPopup.setCloseClickHandler(() => {
-    remove(detailInfoCardPopup);
-    body.classList.remove('hide-overflow');
+    //#clickClosePopup
+    detailInfoCardPopup.setCloseClickHandler(() => {
+      remove(detailInfoCardPopup);
+      body.classList.remove('hide-overflow');
+    });
   });
 };
-
+//#renderCertainQuantityCards
 for (let i = 0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
   const filmCard = new FilmCard(filmCards[i]);
   const detailInfoCardPopup = new DetailInfoPopup(filmCards[i]);
@@ -83,8 +87,9 @@ for (let i = 0; i < Math.min(filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++)
 if (filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
   let renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
   const showMoreBtn = new ShowMoreButton();
+  //#renderShowButton
   render(mainFilmList, showMoreBtn, RenderPosition.BEFOREEND);
-
+  //#clickShowMoreButton
   showMoreBtn.setShowMoreClickHandler(() => {
     filmCards
       .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
