@@ -1,46 +1,48 @@
 import FilmCard from '../view/film-card.js';
 import DetailInfoPopup from '../view/detail-info-popup.js';
 import ShowMoreButton from '../view/show-more-button.js';
-import FilmWrapper from '../view/films-list';
 import {
   render,
   RenderPosition,
   remove
-} from './utils/render';
+} from './../utils/render';
 
 const FILM_CARDS_AMOUNT_PER_STEP = 5;
 const body = document.querySelector('body');
 
 export default class MovieListPresenter {
-  #filmCardContainer = null;
+  #filmCardsContainer = null;
 
-  #filmList = new FilmWrapper();
-  #filmCard = new FilmCard();
-  #detailInfoPopup = new DetailInfoPopup();
+  #filmCard = (callback) => {
+    new FilmCard(callback);
+  };
+
+  #detailInfoPopup = (callback) => {
+    new DetailInfoPopup(callback);
+  };
   #showMoreButton = new ShowMoreButton();
 
   #filmCards = [];
 
-  constructor(filmCardContainer) {
-    this.#filmCardContainer = filmCardContainer;
+  constructor(filmCardsContainer) {
+    this.#filmCardsContainer = filmCardsContainer;
   }
 
   init = (filmCards) => {
     this.#filmCards = [...filmCards];
     // Метод для инициализации (начала работы) модуля,
-    // малая часть текущей функции createFilmCards в main.js
-    render(this.#filmCardContainer, this.#filmCard, RenderPosition.BEFOREEND);
 
-    this.#createFilmCards();
+
+    this.#renderFilmCards();
   }
 
   #renderShowButton = () => {
-    render(this.#filmCardContainer, this.#showMoreButton, RenderPosition.BEFOREEND);
+    render(this.#filmCardsContainer, this.#showMoreButton, RenderPosition.BEFOREEND);
 
   }
 
   #renderPopup = () => {
-    render(this.#filmCardContainer, this.#detailInfoPopup, RenderPosition.BEFOREEND);
+    render(this.#filmCardsContainer, this.#detailInfoPopup, RenderPosition.BEFOREEND);
   }
 
   #clickFilmCard = () => {
@@ -74,11 +76,9 @@ export default class MovieListPresenter {
       let renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
       this.#filmCards
         .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
-        //передать сюда в фор ич значение и создавая элементы в скобках создавать с ним
-        .forEach(() => {
-          this.#filmCard;
-          this.#detailInfoPopup;
-          this.#createFilmCards();
+        .forEach((filmCard) => {
+          this.#filmCard(filmCard);
+          this.#detailInfoPopup(filmCard);
         });
 
       renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
@@ -91,16 +91,49 @@ export default class MovieListPresenter {
 
   #renderCertainQuantityCards = () => {
     //метод отрисовки n количества карточек за раз
-    for (let i = 0; i < Math.min(this.#filmCard.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
-      /*const filmCard = new FilmCard(filmCards[i]);
-      const detailInfoCardPopup = new DetailInfoPopup(filmCards[i]);
-      createFilmCards(filmCard, detailInfoCardPopup);*/
+    for (let i = 0; i < Math.min(this.#filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
+      this.#createFilmCards(this.#filmCard(this.#filmCards[i]));
+      //this.#detailInfoPopup(this.#filmCards[i]);
     }
   }
 
-  #createFilmCards = () => {
+  #conditionRenderCardsAndButton = () => {
+    if (this.#filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
+      this.#renderShowButton();
+      this.#clickShowMoreButton();
+    }
 
+  };
 
-  }
+  #createFilmCards = (filmCard, detailInfoCardPopup) => {
+    render(this.#filmCardsContainer, filmCard, RenderPosition.BEFOREEND);
+    /*
+    //#clickFilmCard
+    filmCard.setOpenClickHandler(() => {
+      //#renderPopup
+      render(body, detailInfoCardPopup, RenderPosition.BEFOREEND);
+      body.classList.add('hide-overflow');
+      //#escOpenPopup 
+      const onEscKeyDown = (evt) => {
+        if (evt.key === 'Escape' || evt.key === 'Esc') {
+          evt.preventDefault();
+          remove(detailInfoCardPopup);
+          body.classList.remove('hide-overflow');
+          document.removeEventListener('keydown', onEscKeyDown);
+        }
+      };
+      document.addEventListener('keydown', onEscKeyDown);
+      //#clickClosePopup
+      detailInfoCardPopup.setCloseClickHandler(() => {
+        remove(detailInfoCardPopup);
+        body.classList.remove('hide-overflow');
+      });
+    });*/
+  };
+
+  #renderFilmCards = () => {
+    this.#renderCertainQuantityCards();
+
+  };
 
 };
