@@ -179,4 +179,34 @@ export default class DetailInfoPopup extends AbstractView {
     evt.preventDefault();
     this._callback.click();
   }
+
+  setClickFavorite = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#clickFavorite);
+  }
+
+  #clickFavorite = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  setClickWatched = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#clickWatched);
+  }
+
+  #clickWatched = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  setClickWatchlist = (callback) => {
+    this._callback.click = callback;
+    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#clickWatchlist);
+  }
+
+  #clickWatchlist = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
+  }
 }
