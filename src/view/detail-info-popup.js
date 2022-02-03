@@ -181,32 +181,32 @@ export default class DetailInfoPopup extends AbstractView {
   }
 
   setClickFavorite = (callback) => {
-    this._callback.click = callback;
+    this._callback.clickFavorite = callback;
     this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#clickFavorite);
   }
 
   #clickFavorite = (evt) => {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.clickFavorite();
   }
 
   setClickWatched = (callback) => {
-    this._callback.click = callback;
+    this._callback.clickWatched = callback;
     this.element.querySelector('.film-details__control-button--watched').addEventListener('click', this.#clickWatched);
   }
 
   #clickWatched = (evt) => {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.clickWatched();
   }
 
   setClickWatchlist = (callback) => {
-    this._callback.click = callback;
+    this._callback.clickWatchList = callback;
     this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#clickWatchlist);
   }
 
   #clickWatchlist = (evt) => {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.clickWatchList();
   }
 }

@@ -100,29 +100,18 @@ export default class MovieListPresenter {
       const currentObject = this.#filmCards[i];
       this.#createFilmCards(currentFilmCard, currentPopup);
       this.#changeData(currentObject, currentFilmCard, currentPopup);
-      //ниже код тестовый. 6 последних событий на клик в карте и попапе работают неправильно.кликается вся карточка
-      currentFilmCard.setOpenClickHandler(() => {
-        console.log('click card');
-      });
-      currentFilmCard.setClickFavorite(() => {
-        console.log('click favorite');
-      });
     }
   }
 
   #changeData = (currentObject, currentFilmCard, currentPopup) => {
-    /*
     const changeDataCondition = (objectName, currentButton) => {
       if (currentObject[objectName] === false) {
         currentButton.classList.add('film-card__controls-item--active');
         currentObject[objectName] = true;
-        console.log(currentObject[objectName]);
 
       } else {
         currentButton.classList.remove('film-card__controls-item--active');
         currentObject[objectName] = false;
-        console.log(currentObject[objectName]);
-
       }
     };
     currentFilmCard.setClickWatchlist(() => {
@@ -149,7 +138,6 @@ export default class MovieListPresenter {
       const currentButton = currentPopup.element.querySelector('.film-details__control-button--watchlist');
       changeDataCondition('isFavorite', currentButton);
     });
-    */
   }
 
   #conditionRenderCardsAndButton = () => {
@@ -170,6 +158,6 @@ export default class MovieListPresenter {
   #renderFilmCards = () => {
     this.#renderCertainQuantityCards();
     this.#conditionRenderCardsAndButton();
+    console.log(this.#filmCards);
   };
-
 }
