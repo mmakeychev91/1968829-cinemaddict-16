@@ -1,4 +1,3 @@
-import MenuView from './view/menu.js';
 import Rank from './view/rank.js';
 import FilmQuantity from './view/film-quantity.js';
 import Stats from './view/stats.js';
@@ -24,11 +23,6 @@ const rank = new Rank('Movie Buff');
 const sort = new Sort();
 const footer = document.querySelector('footer');
 
-render(siteMainElement, new MenuView({
-  watchlist: filmCards.filter((obj) => obj.isWatchlist === true).length,
-  history: filmCards.filter((obj) => obj.isWatched === true).length,
-  favorite: filmCards.filter((obj) => obj.isFavorite === true).length,
-}), RenderPosition.AFTERBEGIN);
 render(header, rank, RenderPosition.BEFOREEND);
 render(siteMainElement, sort, RenderPosition.BEFOREEND);
 render(siteMainElement, new Stats(), RenderPosition.BEFOREEND);

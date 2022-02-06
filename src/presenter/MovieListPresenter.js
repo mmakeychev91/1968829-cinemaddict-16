@@ -2,9 +2,11 @@ import FilmCard from '../view/film-card.js';
 import DetailInfoPopup from '../view/detail-info-popup.js';
 import ShowMoreButton from '../view/show-more-button.js';
 import FilmWrapper from '../view/films-list.js';
+import MenuView from '../view/menu.js';
 import {
   render,
   RenderPosition,
+  replace,
   remove
 } from './../utils/render';
 
@@ -18,6 +20,7 @@ export default class MovieListPresenter {
   #filmWrapper = new FilmWrapper();
   #mainFilmList = this.#filmWrapper.element.querySelector('.films-list');
   #mainFilmCardContainer = this.#filmWrapper.element.querySelector('.films-list__container');
+
   #filmCards = [];
 
   constructor(siteMainElement) {
@@ -29,12 +32,25 @@ export default class MovieListPresenter {
     // Метод для инициализации (начала работы) модуля,
     render(this.#siteMainElement, this.#filmWrapper, RenderPosition.BEFOREEND);
 
-    this.#renderFilmCards();
+    const currentMenuView = new MenuView({
+      //TODO создать функцию чтоб избежать повторение кода
+      watchlist: this.#filmCards.filter((obj) => obj.isWatchlist === true).length,
+      history: this.#filmCards.filter((obj) => obj.isWatched === true).length,
+      favorite: this.#filmCards.filter((obj) => obj.isFavorite === true).length,
+    });
+
+
+    this.#renderFilmCards(currentMenuView);
+    this.#renderMenuView(currentMenuView);
   }
 
   #renderShowButton = () => {
     render(this.#mainFilmList, this.#showMoreButton, RenderPosition.BEFOREEND);
 
+  }
+
+  #renderMenuView = (menuView) => {
+    render(this.#siteMainElement, menuView, RenderPosition.AFTERBEGIN);
   }
 
   #renderPopup = (detailInfoCardPopup) => {
@@ -91,19 +107,7 @@ export default class MovieListPresenter {
     });
   }
 
-
-  #renderCertainQuantityCards = () => {
-    //метод отрисовки n количества карточек за раз
-    for (let i = 0; i < Math.min(this.#filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
-      const currentFilmCard = new FilmCard(this.#filmCards[i]);
-      const currentPopup = new DetailInfoPopup(this.#filmCards[i]);
-      const currentObject = this.#filmCards[i];
-      this.#createFilmCards(currentFilmCard, currentPopup);
-      this.#changeData(currentObject, currentFilmCard, currentPopup);
-    }
-  }
-
-  #changeData = (currentObject, currentFilmCard, currentPopup) => {
+  #changeData = (currentObject, currentFilmCard, currentPopup, renderMenuView) => {
     const changeDataCondition = (objectName, currentButton) => {
       if (currentObject[objectName] === false) {
         currentButton.classList.add('film-card__controls-item--active');
@@ -113,6 +117,16 @@ export default class MovieListPresenter {
         currentButton.classList.remove('film-card__controls-item--active');
         currentObject[objectName] = false;
       }
+      renderMenuView = new MenuView({
+        //TODO создать функцию чтоб избежать повторение кода
+        watchlist: this.#filmCards.filter((obj) => obj.isWatchlist === true).length,
+        history: this.#filmCards.filter((obj) => obj.isWatched === true).length,
+        favorite: this.#filmCards.filter((obj) => obj.isFavorite === true).length,
+      });
+
+      return this.#renderMenuView(renderMenuView);
+
+
     };
     currentFilmCard.setClickWatchlist(() => {
       const currentButton = currentFilmCard.element.querySelector('.film-card__controls-item--add-to-watchlist');
@@ -138,9 +152,21 @@ export default class MovieListPresenter {
       const currentButton = currentPopup.element.querySelector('.film-details__control-button--watchlist');
       changeDataCondition('isFavorite', currentButton);
     });
+
   }
 
-  #conditionRenderCardsAndButton = () => {
+  #renderCertainQuantityCards = (renderMenuView) => {
+    //метод отрисовки n количества карточек за раз
+    for (let i = 0; i < Math.min(this.#filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
+      const currentObject = this.#filmCards[i];
+      const currentFilmCard = new FilmCard(currentObject);
+      const currentPopup = new DetailInfoPopup(currentObject);
+      this.#createFilmCards(currentFilmCard, currentPopup);
+      this.#changeData(currentObject, currentFilmCard, currentPopup, renderMenuView);
+    }
+  }
+
+  #conditionRenderCardsAndButton = (renderMenuView) => {
     if (this.#filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
       const renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
       this.#renderShowButton();
@@ -150,14 +176,17 @@ export default class MovieListPresenter {
   };
 
   #createFilmCards = (filmCard, detailInfoCardPopup) => {
+
+
     render(this.#mainFilmCardContainer, filmCard, RenderPosition.BEFOREEND);
     this.#clickFilmCard(filmCard, detailInfoCardPopup);
+
+
   };
 
 
-  #renderFilmCards = () => {
-    this.#renderCertainQuantityCards();
-    this.#conditionRenderCardsAndButton();
-    console.log(this.#filmCards);
+  #renderFilmCards = (renderFilmCards) => {
+    this.#renderCertainQuantityCards(renderFilmCards);
+    this.#conditionRenderCardsAndButton(renderFilmCards);
   };
 }

@@ -3,6 +3,9 @@ import dayjs from 'dayjs';
 import {
   getRandomInteger
 } from './../utils/common';
+import {
+  nanoid
+} from 'nanoid';
 
 const LOREM = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -252,6 +255,7 @@ const generateComments = () => {
 
 //генерируем карточку фильма
 export const generateFilmCard = () => ({
+  id: nanoid(),
   poster: generatePoster(),
   title: generateTitle(),
   originalTitle: generateTitle(),
