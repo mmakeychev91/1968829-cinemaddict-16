@@ -182,7 +182,7 @@ export default class DetailInfoPopup extends AbstractView {
 
   setClickFavorite = (callback) => {
     this._callback.clickFavorite = callback;
-    this.element.querySelector('.film-details__control-button--watchlist').addEventListener('click', this.#clickFavorite);
+    this.element.querySelector('.film-details__control-button--favorite').addEventListener('click', this.#clickFavorite);
   }
 
   #clickFavorite = (evt) => {

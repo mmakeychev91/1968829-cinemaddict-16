@@ -15,6 +15,9 @@ const body = document.querySelector('body');
 
 export default class MovieListPresenter {
   #siteMainElement = null;
+  #menuView = null;
+  #filmCard = null;
+  #detailInfoPopup = null;
 
   #showMoreButton = new ShowMoreButton();
   #filmWrapper = new FilmWrapper();
@@ -32,29 +35,37 @@ export default class MovieListPresenter {
     // Метод для инициализации (начала работы) модуля,
     render(this.#siteMainElement, this.#filmWrapper, RenderPosition.BEFOREEND);
 
-    const currentMenuView = new MenuView({
-      //TODO создать функцию чтоб избежать повторение кода
-      watchlist: this.#filmCards.filter((obj) => obj.isWatchlist === true).length,
-      history: this.#filmCards.filter((obj) => obj.isWatched === true).length,
-      favorite: this.#filmCards.filter((obj) => obj.isFavorite === true).length,
-    });
 
-
-    this.#renderFilmCards(currentMenuView);
-    this.#renderMenuView(currentMenuView);
+    this.#renderMenuView(this.#filmCards);
+    this.#renderFilmCards();
   }
+
+  #renderMenuView = (arrow) => {
+    const prevMenuView = this.#menuView;
+    this.#menuView = new MenuView({
+      watchlist: arrow.filter((obj) => obj.isWatchlist === true).length,
+      history: arrow.filter((obj) => obj.isWatched === true).length,
+      favorite: arrow.filter((obj) => obj.isFavorite === true).length,
+    });
+    if (prevMenuView === null) {
+      render(this.#siteMainElement, this.#menuView, RenderPosition.AFTERBEGIN);
+      return;
+
+    }
+    if (this.#siteMainElement.contains(prevMenuView.element)) {
+      replace(this.#menuView, prevMenuView);
+
+    }
+    remove(prevMenuView);
+  };
 
   #renderShowButton = () => {
     render(this.#mainFilmList, this.#showMoreButton, RenderPosition.BEFOREEND);
 
   }
 
-  #renderMenuView = (menuView) => {
-    render(this.#siteMainElement, menuView, RenderPosition.AFTERBEGIN);
-  }
-
-  #renderPopup = (detailInfoCardPopup) => {
-    render(body, detailInfoCardPopup, RenderPosition.BEFOREEND);
+  #renderPopup = (currentPopup) => {
+    render(body, currentPopup, RenderPosition.BEFOREEND);
     body.classList.add('hide-overflow');
   }
 
@@ -78,11 +89,14 @@ export default class MovieListPresenter {
     }
   };
 
-  #clickFilmCard = (filmCard, detailInfoCardPopup) => {
-    filmCard.setOpenClickHandler(() => {
-      this.#renderPopup(detailInfoCardPopup);
-      document.addEventListener('keydown', (evt) => this.#escOpenPopup(evt, detailInfoCardPopup));
-      this.#clickClosePopup(detailInfoCardPopup);
+  #clickFilmCard = (obj, filmCard) => {
+
+    this.#filmCard.setOpenClickHandler(() => {
+      this.#detailInfoPopup = new DetailInfoPopup(obj);
+      this.#renderPopup(this.#detailInfoPopup);
+      document.addEventListener('keydown', (evt) => this.#escOpenPopup(evt, this.#detailInfoPopup));
+      this.#clickClosePopup(this.#detailInfoPopup);
+      this.#changeDataPopup(obj, this.#detailInfoPopup, filmCard);
     });
 
   }
@@ -91,12 +105,10 @@ export default class MovieListPresenter {
     this.#showMoreButton.setShowMoreClickHandler(() => {
       this.#filmCards
         .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
-        .forEach((filmCard) => {
-          const nextFilmCard = new FilmCard(filmCard);
-          const nextDetailInfoPopup = new DetailInfoPopup(filmCard);
-          const nextObject = filmCard;
-          this.#createFilmCards(nextFilmCard, nextDetailInfoPopup);
-          this.#changeData(nextObject, nextFilmCard, nextDetailInfoPopup);
+        .forEach((nextObject) => {
+          this.#filmCard = new FilmCard(nextObject);
+          this.#createFilmCards(nextObject, this.#filmCard);
+          this.#changeData(nextObject, this.#filmCard);
         });
 
       renderedFilmCardCount += FILM_CARDS_AMOUNT_PER_STEP;
@@ -107,66 +119,87 @@ export default class MovieListPresenter {
     });
   }
 
-  #changeData = (currentObject, currentFilmCard, currentPopup, renderMenuView) => {
+  #changeData = (currentObject, filmCard) => {
     const changeDataCondition = (objectName, currentButton) => {
       if (currentObject[objectName] === false) {
+
         currentButton.classList.add('film-card__controls-item--active');
         currentObject[objectName] = true;
 
       } else {
+
         currentButton.classList.remove('film-card__controls-item--active');
         currentObject[objectName] = false;
       }
-      renderMenuView = new MenuView({
-        //TODO создать функцию чтоб избежать повторение кода
-        watchlist: this.#filmCards.filter((obj) => obj.isWatchlist === true).length,
-        history: this.#filmCards.filter((obj) => obj.isWatched === true).length,
-        favorite: this.#filmCards.filter((obj) => obj.isFavorite === true).length,
-      });
-
-      return this.#renderMenuView(renderMenuView);
-
-
+      this.#renderMenuView(this.#filmCards);
     };
-    currentFilmCard.setClickWatchlist(() => {
-      const currentButton = currentFilmCard.element.querySelector('.film-card__controls-item--add-to-watchlist');
+    filmCard.setClickWatchlist(() => {
+      const currentButton = filmCard.element.querySelector('.film-card__controls-item--add-to-watchlist');
       changeDataCondition('isWatchlist', currentButton);
     });
-    currentFilmCard.setClickWatched(() => {
-      const currentButton = currentFilmCard.element.querySelector('.film-card__controls-item--mark-as-watched');
+    filmCard.setClickWatched(() => {
+      const currentButton = filmCard.element.querySelector('.film-card__controls-item--mark-as-watched');
       changeDataCondition('isWatched', currentButton);
     });
-    currentFilmCard.setClickFavorite(() => {
-      const currentButton = currentFilmCard.element.querySelector('.film-card__controls-item--favorite');
+    filmCard.setClickFavorite(() => {
+      const currentButton = filmCard.element.querySelector('.film-card__controls-item--favorite');
       changeDataCondition('isFavorite', currentButton);
     });
-    currentPopup.setClickWatchlist(() => {
-      const currentButton = currentPopup.element.querySelector('.film-details__control-button--watchlist');
-      changeDataCondition('isWatchlist', currentButton);
+  }
+
+
+  #changeDataPopup = (currentObject, filmCard, smallCard) => {
+    //TODO Нужно сделать рефакторинг: в changeDate и changeDatePopup не DRY
+    const changeDataCondition = (objectName, currentButton, currentSmallButton) => {
+      if (currentObject[objectName] === false) {
+
+        currentButton.classList.add('film-details__control-button--active');
+        currentSmallButton.classList.add('film-card__controls-item--active');
+        currentObject[objectName] = true;
+
+      } else {
+
+        currentButton.classList.remove('film-details__control-button--active');
+        currentSmallButton.classList.remove('film-card__controls-item--active');
+        currentObject[objectName] = false;
+      }
+      this.#renderMenuView(this.#filmCards);
+    };
+
+    filmCard.setClickWatchlist(() => {
+      const currentButton = filmCard.element.querySelector('.film-details__control-button--watchlist');
+      const currentSmallButton = smallCard.element.querySelector('.film-card__controls-item--add-to-watchlist');
+      changeDataCondition('isWatchlist', currentButton, currentSmallButton);
+
     });
-    currentPopup.setClickWatched(() => {
-      const currentButton = currentPopup.element.querySelector('.film-details__control-button--watched');
-      changeDataCondition('isWatched', currentButton);
+    filmCard.setClickWatched(() => {
+      const currentButton = filmCard.element.querySelector('.film-details__control-button--watched');
+      const currentSmallButton = smallCard.element.querySelector('.film-card__controls-item--mark-as-watched');
+      changeDataCondition('isWatched', currentButton, currentSmallButton);
+
     });
-    currentPopup.setClickFavorite(() => {
-      const currentButton = currentPopup.element.querySelector('.film-details__control-button--watchlist');
-      changeDataCondition('isFavorite', currentButton);
+    filmCard.setClickFavorite(() => {
+      const currentButton = filmCard.element.querySelector('.film-details__control-button--favorite');
+      const currentSmallButton = smallCard.element.querySelector('.film-card__controls-item--favorite');
+      changeDataCondition('isFavorite', currentButton, currentSmallButton);
+
     });
+
 
   }
 
-  #renderCertainQuantityCards = (renderMenuView) => {
+  #renderCertainQuantityCards = () => {
     //метод отрисовки n количества карточек за раз
     for (let i = 0; i < Math.min(this.#filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
       const currentObject = this.#filmCards[i];
-      const currentFilmCard = new FilmCard(currentObject);
-      const currentPopup = new DetailInfoPopup(currentObject);
-      this.#createFilmCards(currentFilmCard, currentPopup);
-      this.#changeData(currentObject, currentFilmCard, currentPopup, renderMenuView);
+      this.#filmCard = new FilmCard(currentObject);
+      this.#createFilmCards(currentObject, this.#filmCard);
+      this.#changeData(currentObject, this.#filmCard);
     }
   }
 
-  #conditionRenderCardsAndButton = (renderMenuView) => {
+
+  #conditionRenderCardsAndButton = () => {
     if (this.#filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
       const renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
       this.#renderShowButton();
@@ -175,18 +208,25 @@ export default class MovieListPresenter {
 
   };
 
-  #createFilmCards = (filmCard, detailInfoCardPopup) => {
+  #createFilmCards = (obj, filmCard) => {
 
 
-    render(this.#mainFilmCardContainer, filmCard, RenderPosition.BEFOREEND);
-    this.#clickFilmCard(filmCard, detailInfoCardPopup);
+    this.#renderFilmCard();
+    this.#clickFilmCard(obj, filmCard);
 
 
   };
 
+  #renderFilmCard = () => {
 
-  #renderFilmCards = (renderFilmCards) => {
-    this.#renderCertainQuantityCards(renderFilmCards);
-    this.#conditionRenderCardsAndButton(renderFilmCards);
+
+    render(this.#mainFilmCardContainer, this.#filmCard, RenderPosition.BEFOREEND);
+
+  };
+
+
+  #renderFilmCards = () => {
+    this.#renderCertainQuantityCards();
+    this.#conditionRenderCardsAndButton();
   };
 }
