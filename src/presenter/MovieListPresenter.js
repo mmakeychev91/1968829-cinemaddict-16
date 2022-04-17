@@ -3,6 +3,7 @@ import DetailInfoPopup from '../view/detail-info-popup.js';
 import ShowMoreButton from '../view/show-more-button.js';
 import FilmWrapper from '../view/films-list.js';
 import MenuView from '../view/menu.js';
+import Sort from '../view/sort.js';
 import {
   render,
   RenderPosition,
@@ -23,6 +24,7 @@ export default class MovieListPresenter {
   #filmWrapper = new FilmWrapper();
   #mainFilmList = this.#filmWrapper.element.querySelector('.films-list');
   #mainFilmCardContainer = this.#filmWrapper.element.querySelector('.films-list__container');
+  #sort = new Sort();
 
   #filmCards = [];
 
@@ -31,13 +33,17 @@ export default class MovieListPresenter {
   }
 
   init = (filmCards) => {
-    this.#filmCards = [...filmCards];
+    this.#filmCards = [...filmCards.sort((a, b) => a.id > b.id ? -1 : 1)];
     // Метод для инициализации (начала работы) модуля,
     render(this.#siteMainElement, this.#filmWrapper, RenderPosition.BEFOREEND);
-
+    const sort = this.#sort;
+    render(this.#siteMainElement, sort, RenderPosition.AFTERBEGIN);
+    if (this.#filmCards.length === 0) {
+      remove(sort);
+    }
 
     this.#renderMenuView(this.#filmCards);
-    this.#renderFilmCards();
+    this.#renderFilmCards(this.#filmCards);
   }
 
   #renderMenuView = (arrow) => {
@@ -101,9 +107,9 @@ export default class MovieListPresenter {
 
   }
 
-  #clickShowMoreButton = (renderedFilmCardCount) => {
+  #clickShowMoreButton = (renderedFilmCardCount, arr) => {
     this.#showMoreButton.setShowMoreClickHandler(() => {
-      this.#filmCards
+      arr
         .slice(renderedFilmCardCount, renderedFilmCardCount + FILM_CARDS_AMOUNT_PER_STEP)
         .forEach((nextObject) => {
           this.#filmCard = new FilmCard(nextObject);
@@ -188,10 +194,10 @@ export default class MovieListPresenter {
 
   }
 
-  #renderCertainQuantityCards = () => {
+  #renderCertainQuantityCards = (arr) => {
     //метод отрисовки n количества карточек за раз
-    for (let i = 0; i < Math.min(this.#filmCards.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
-      const currentObject = this.#filmCards[i];
+    for (let i = 0; i < Math.min(arr.length, FILM_CARDS_AMOUNT_PER_STEP); i++) {
+      const currentObject = arr[i];
       this.#filmCard = new FilmCard(currentObject);
       this.#createFilmCards(currentObject, this.#filmCard);
       this.#changeData(currentObject, this.#filmCard);
@@ -199,11 +205,11 @@ export default class MovieListPresenter {
   }
 
 
-  #conditionRenderCardsAndButton = () => {
-    if (this.#filmCards.length > FILM_CARDS_AMOUNT_PER_STEP) {
+  #conditionRenderCardsAndButton = (arr) => {
+    if (arr.length > FILM_CARDS_AMOUNT_PER_STEP) {
       const renderedFilmCardCount = FILM_CARDS_AMOUNT_PER_STEP;
       this.#renderShowButton();
-      this.#clickShowMoreButton(renderedFilmCardCount);
+      this.#clickShowMoreButton(renderedFilmCardCount, arr);
     }
 
   };
@@ -211,22 +217,45 @@ export default class MovieListPresenter {
   #createFilmCards = (obj, filmCard) => {
 
 
-    this.#renderFilmCard();
+    this.#renderFilmCard(filmCard);
+
+
     this.#clickFilmCard(obj, filmCard);
 
 
   };
 
-  #renderFilmCard = () => {
+  #renderFilmCard = (filmCard) => {
 
-
-    render(this.#mainFilmCardContainer, this.#filmCard, RenderPosition.BEFOREEND);
-
+    render(this.#mainFilmCardContainer, filmCard, RenderPosition.BEFOREEND);
   };
 
+  #rerenderCards = (arr) => {
+    while (this.#mainFilmCardContainer.firstChild) {
+      this.#mainFilmCardContainer.removeChild(this.#mainFilmCardContainer.firstChild);
+    }
+    this.#renderCertainQuantityCards(arr);
+  };
 
-  #renderFilmCards = () => {
-    this.#renderCertainQuantityCards();
-    this.#conditionRenderCardsAndButton();
+  #renderFilmCards = (arr) => {
+    //TODO Добавьте проверку, чтобы список перерисовывался только в случае, если выбранная пользователем сортировка отличается от текущей. Незачем лишний раз перерисовывать список фильмов.
+    //есть идея сделать копию массива до сортировки и сравнить две сортировки, но как это сделать пока не знаю
+    // const oldArr = arr.slice(0);
+    this.#sort.setClickDefaultSort(() => {
+      arr.sort((a, b) => a.id > b.id ? -1 : 1);
+      this.#rerenderCards(arr);
+    });
+    this.#sort.setClickRatingSort(() => {
+      arr.sort((a, b) => a.rating > b.rating ? -1 : 1);
+      this.#rerenderCards(arr);
+    });
+
+    this.#sort.setClickDateSort(() => {
+      arr.sort((a, b) => a.releaseDate > b.releaseDate ? -1 : 1);
+      this.#rerenderCards(arr);
+    });
+
+    this.#renderCertainQuantityCards(arr);
+    this.#conditionRenderCardsAndButton(arr);
   };
 }
