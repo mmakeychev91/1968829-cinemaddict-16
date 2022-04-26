@@ -237,22 +237,36 @@ export default class MovieListPresenter {
     this.#renderCertainQuantityCards(arr);
   };
 
+  #compareArray = (oldArr, arr) => {
+    let num = 0;
+    for (let i = 0; i <= arr.length; i++) {
+      if (oldArr[i] === arr[i]) {
+        num++;
+        if (num === arr.length) {
+          return null;
+        } else {
+          this.#rerenderCards(arr);
+        }
+      }
+    }
+  };
+
   #renderFilmCards = (arr) => {
-    //TODO Добавьте проверку, чтобы список перерисовывался только в случае, если выбранная пользователем сортировка отличается от текущей. Незачем лишний раз перерисовывать список фильмов.
-    //есть идея сделать копию массива до сортировки и сравнить две сортировки, но как это сделать пока не знаю
-    // const oldArr = arr.slice(0);
     this.#sort.setClickDefaultSort(() => {
+      const oldArr = arr.slice(0);
       arr.sort((a, b) => a.id > b.id ? -1 : 1);
-      this.#rerenderCards(arr);
+      this.#compareArray(oldArr, arr);
     });
     this.#sort.setClickRatingSort(() => {
+      const oldArr = arr.slice(0);
       arr.sort((a, b) => a.rating > b.rating ? -1 : 1);
-      this.#rerenderCards(arr);
+      this.#compareArray(oldArr, arr);
     });
 
     this.#sort.setClickDateSort(() => {
+      const oldArr = arr.slice(0);
       arr.sort((a, b) => a.releaseDate > b.releaseDate ? -1 : 1);
-      this.#rerenderCards(arr);
+      this.#compareArray(oldArr, arr);
     });
 
     this.#renderCertainQuantityCards(arr);
