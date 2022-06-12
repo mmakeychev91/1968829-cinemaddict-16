@@ -15,7 +15,7 @@ export default class Sort extends AbstractView {
 
   setClickDefaultSort = (callback) => {
     this._callback.clickDefaultSort = callback;
-    this.element.querySelector('[data-sort="default"]').addEventListener('click', this.#clickDefaultSort);
+    this.element.querySelector('.sort li a[data-sort="default"]').addEventListener('click', this.#clickDefaultSort);
   }
 
   #clickDefaultSort = (evt) => {
@@ -25,7 +25,7 @@ export default class Sort extends AbstractView {
 
   setClickDateSort = (callback) => {
     this._callback.clickDateSort = callback;
-    this.element.querySelector('[data-sort="date"]').addEventListener('click', this.#clickDateSort);
+    this.element.querySelector('.sort li a[data-sort="date"]').addEventListener('click', this.#clickDateSort);
   }
 
   #clickDateSort = (evt) => {
@@ -35,7 +35,7 @@ export default class Sort extends AbstractView {
 
   setClickRatingSort = (callback) => {
     this._callback.clickRatingSort = callback;
-    this.element.querySelector('[data-sort="rating"]').addEventListener('click', this.#clickRatingSort);
+    this.element.querySelector('.sort li a[data-sort="rating"]').addEventListener('click', this.#clickRatingSort);
   }
 
   #clickRatingSort = (evt) => {
