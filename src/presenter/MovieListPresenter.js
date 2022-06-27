@@ -339,7 +339,7 @@ export default class MovieListPresenter {
       for (const currentSortBtn of this.#sortBtn) {
         const sortBtnDataset = currentSortBtn.dataset.sort;
         if (!currentSortBtn.classList.contains('sort__button--active') && sortBtnDataset === 'date') {
-          arr.sort((a, b) => a.releaseDate > b.releaseDate ? -1 : 1);
+          arr.sort((a, b) => a.releaseDate - b.releaseDate);
           this.#rerenderCards(arr);
           currentSortBtn.classList.add('sort__button--active');
         } else {
