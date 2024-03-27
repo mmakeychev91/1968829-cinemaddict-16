@@ -14,6 +14,7 @@ import MovieListPresenter from './presenter/MovieListPresenter.js';
 const filmCards = Array.from({
   length: 25
 }, generateFilmCard);
+console.log()
 
 const header = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
